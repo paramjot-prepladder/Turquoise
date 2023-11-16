@@ -8,7 +8,7 @@ import '../../utils/color/app_colors.dart';
 import '../../provider/login_provider.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({Key? key}) : super(key: key);
+  const MenuScreen({super.key});
 
   @override
   _MenuScreenState createState() => _MenuScreenState();
@@ -43,34 +43,42 @@ class _MenuScreenState extends State<MenuScreen> {
           body: Container(child: Consumer<LoginProvider>(
             builder: (context, loginProvider, child) {
               return FutureProvider(
-                create: (_) {
-                  return loginProvider.menuApi(context: context);
-                },
-                lazy: false,
-                initialData: ResponsePData(),
-                child: ListView.builder(
-                  itemCount: loginProvider.listProduct?.data.products.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 10),
-                          height: 60,
-                          width: double.infinity,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                                '${loginProvider.listProduct?.data.products[index].name}',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: AppColors.liteBlack, fontSize: 20)),
-                          ),
-                        )
-                      ],
-                    );
+                  create: (_) {
+                    return loginProvider.menuApi(context: context);
                   },
-                ),
-              );
+                  lazy: false,
+                  initialData: ResponsePData(),
+                  child: loginProvider.listProduct?.data != null
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          itemCount:
+                              loginProvider.listProduct?.data.products.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                        '${loginProvider.listProduct?.data.products[index].name}',
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                            color: AppColors.liteBlack,
+                                            fontSize: 20)),
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.pinkText,
+                          ),
+                        ));
             },
           )
               /*child: Consumer<LoginProvider>(
