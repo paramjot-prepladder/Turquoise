@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:testing/ui/chat/chat.dart';
 import 'package:testing/ui/login/login.dart';
 import 'package:testing/ui/menu/menu.dart';
+import 'package:testing/ui/register/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MenuScreen(),
+      home: const Chat(),
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/common/common_widgets.dart';
 import '../../utils/common/text_field.dart';
+import '../add_ticket/add_ticket.dart';
 import '../cart/cart.dart';
 import '../menu/menu.dart';
 
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MenuScreen()),
+                  MaterialPageRoute(builder: (context) => const AddTicket()),
                 );
               },
             ),

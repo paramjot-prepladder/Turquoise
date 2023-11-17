@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,9 +28,14 @@ class LoginProvider extends ChangeNotifier {
   }
 
   ResponsePEntity? listProduct;
-
+  List<String>? s ;
   menuApi({required BuildContext context}) async {
     listProduct = await ApiService().productList();
+    var a = listProduct?.data.products.map((e) => e.name);
+    s = a?.toList();
+    if (kDebugMode) {
+      print(a?.toList());
+    }
     notifyListeners();
   }
 

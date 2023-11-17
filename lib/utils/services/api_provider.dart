@@ -68,8 +68,8 @@ class ApiService {
       body['email'] = email;
       body['password'] = pwd;
       http.Response data =
-      await http.post(Uri.parse(baseUrl + "api/login"), body: body);
-      debugPrint('movieTitle: ${data.body}');
+      await http.post(Uri.parse("${baseUrl}api/login"), body: body);
+      debugPrint('movieTitle_login: ${data.body}');
 
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
