@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/model/tickets/response_all_tickets_entity.dart';
 import '../../generated/json/base/json_convert_content.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/login/response_login_entity.dart';
@@ -41,12 +42,10 @@ class ApiService {
 
   Future<ResponsePEntity?> productList() async {
     try {
-      debugPrint('prinint: ');
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
-      http.Response data = await http.get(Uri.parse(baseUrl + "api/products"),
+      http.Response data = await http.get(Uri.parse("${baseUrl}api/products"),
           headers: {"Authorization": token.toString()});
-      debugPrint('prinint: $token');
       debugPrint(data.body);
       if (data.statusCode == 200) {
         debugPrint('movieTitle: ${data.body}');
@@ -56,7 +55,24 @@ class ApiService {
         return Future.error(data.statusCode);
       }
     } catch (error) {
-      debugPrint('prinint : error ');
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseAllTicketsEntity?> getTicket() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.get(Uri.parse("${baseUrl}api/ticket"),
+          headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
       return Future.error(error);
     }
   }
@@ -68,7 +84,7 @@ class ApiService {
       body['email'] = email;
       body['password'] = pwd;
       http.Response data =
-      await http.post(Uri.parse("${baseUrl}api/login"), body: body);
+          await http.post(Uri.parse("${baseUrl}api/login"), body: body);
       debugPrint('movieTitle_login: ${data.body}');
 
       if (data.statusCode == 200) {

@@ -30,7 +30,7 @@ class _Register extends State<Register> {
     // _email =
     //     '${_firstName!.toLowerCase()}.${_lastName!.toLowerCase()}@${faker.internet.domainName()}';
     _focusNode = FocusNode();
-    _passwordController = TextEditingController(text: 'Qawsed1-');
+    _passwordController = TextEditingController(text: '');
     _usernameController = TextEditingController(
       text: _email,
     );

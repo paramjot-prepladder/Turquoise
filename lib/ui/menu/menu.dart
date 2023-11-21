@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:testing/ui/add_ticket/add_ticket.dart';
 
 import '../../model/product/response_p_entity.dart';
 import '../../provider/menu_provider.dart';
@@ -35,100 +36,62 @@ class _MenuScreenState extends State<MenuScreen> {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: AppColors.liteBlack,
-            title: Text('Menu info'),
-          ),
-          backgroundColor: AppColors.whiteText,
-          body: Container(child: Consumer<LoginProvider>(
-            builder: (context, loginProvider, child) {
-              return FutureProvider(
-                  create: (_) {
-                    return loginProvider.menuApi(context: context);
-                  },
-                  lazy: false,
-                  initialData: ResponsePData(),
-                  child: loginProvider.listProduct?.data != null
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:
-                              loginProvider.listProduct?.data.products.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  height: 60,
-                                  width: double.infinity,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                        '${loginProvider.listProduct?.data.products[index].name}',
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(
-                                            color: AppColors.liteBlack,
-                                            fontSize: 20)),
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                        )
-                      : const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.pinkText,
-                          ),
-                        ));
-            },
-          )
-              /*child: Consumer<LoginProvider>(
-              builder: (context, menuProvider, _) {
+            appBar: AppBar(
+              backgroundColor: AppColors.liteBlack,
+              title: const Text('Tickets'),
+            ),
+            backgroundColor: AppColors.whiteText,
+            body: Consumer<LoginProvider>(
+              builder: (context, loginProvider, child) {
                 return FutureProvider(
-                  create: (_) {
-                    return menuProvider.menuApi(context: context);
-                  },
-                  lazy: false,
-                  initialData: DemoResponse(),
-                  child: menuProvider.listProduct?.data.products != null
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: menuProvider.listProduct?.data.products.length ?? 0,
-                          itemBuilder: (ctx, i) {
-                            return Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(left: 10),
-                                  // color: AppColors.iconGrey,
-                                  height: 60,
-                                  width: double.infinity,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '${menuProvider.listProduct?.data.products[i].name}',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: AppColors.liteBlack,
-                                          fontSize: 20),
+                    create: (_) {
+                      return loginProvider.getTickets(context: context);
+                    },
+                    lazy: false,
+                    initialData: ResponsePData(),
+                    child: loginProvider.ticket != null
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: loginProvider.ticket?.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    height: 60,
+                                    width: double.infinity,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                          '${loginProvider.ticket?[index].type}',
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                              color: AppColors.liteBlack,
+                                              fontSize: 20)),
                                     ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 1,
-                                  color: AppColors.greylight,
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      : Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.pinkText,
-                          ),
-                        ),
-                );
+                                  )
+                                ],
+                              );
+                            },
+                          )
+                        : const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.pinkText,
+                            ),
+                          ));
               },
-            ),*/
-              ),
-        ));
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: _incrementCounter,
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            )));
+  }
+
+  void _incrementCounter() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddTicket()),
+    );
   }
 }

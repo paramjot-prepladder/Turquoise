@@ -1,5 +1,5 @@
-import '../../model/product/response_p_entity.dart';
-import 'base/json_convert_content.dart';
+import 'package:testing/generated/json/base/json_convert_content.dart';
+import 'package:testing/model/product/response_p_entity.dart';
 
 ResponsePEntity $ResponsePEntityFromJson(Map<String, dynamic> json) {
   final ResponsePEntity responsePEntity = ResponsePEntity();
