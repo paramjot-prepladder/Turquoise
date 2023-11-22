@@ -7,6 +7,7 @@ import '../../provider/menu_provider.dart';
 import '../../utils/color/app_colors.dart';
 
 import '../../provider/login_provider.dart';
+import '../chat/chat.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -54,38 +55,52 @@ class _MenuScreenState extends State<MenuScreen> {
                             shrinkWrap: true,
                             itemCount: loginProvider.ticket?.length,
                             itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    height: 60,
-                                    width: double.infinity,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                          '${loginProvider.ticket?[index].type}',
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                              color: AppColors.liteBlack,
-                                              fontSize: 20)),
-                                    ),
-                                  )
-                                ],
+                              return GestureDetector(
+                                onTap: () {
+                                  _openChat(loginProvider.ticket?[index].id
+                                      .toString());
+                                },
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      height: 60,
+                                      width: double.infinity,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                            '${loginProvider.ticket?[index].type}',
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(
+                                                color: AppColors.liteBlack,
+                                                fontSize: 20)),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               );
                             },
                           )
                         : const Center(
                             child: CircularProgressIndicator(
-                              color: AppColors.pinkText,
+                              color: AppColors.greenPrimary,
                             ),
                           ));
               },
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: _incrementCounter,
-              tooltip: 'Increment',
+              backgroundColor: AppColors.greenPrimary,
+              tooltip: 'Add Ticket',
               child: const Icon(Icons.add),
             )));
+  }
+
+  void _openChat(String? ticket) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Chat(ticketId: ticket ?? "1")),
+    );
   }
 
   void _incrementCounter() {

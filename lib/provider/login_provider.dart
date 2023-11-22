@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/model/login/response_login_entity.dart';
 import 'package:testing/model/tickets/response_all_tickets_entity.dart';
 
@@ -15,12 +16,12 @@ class LoginProvider extends ChangeNotifier {
       required String pwd,
       required BuildContext context}) async {
     var result = await ApiService().loginApi(email: email, pwd: pwd);
-   return result;
-
+    return result;
   }
 
   ResponsePEntity? listProduct;
-  List<String>? s ;
+  List<String>? s;
+
   menuApi({required BuildContext context}) async {
     listProduct = await ApiService().productList();
     var a = listProduct?.data.products.map((e) => e.name);
@@ -32,10 +33,27 @@ class LoginProvider extends ChangeNotifier {
   }
 
   ResponseAllTicketsEntity? allTicketsEntity;
-  List<ResponseAllTicketsDataTicket>? ticket ;
+  List<ResponseAllTicketsDataTicket>? ticket;
+
   getTickets({required BuildContext context}) async {
     allTicketsEntity = await ApiService().getTicket();
     ticket = allTicketsEntity?.data.ticket;
+    notifyListeners();
+  }
+
+  ResponseMessageEntity? messageEntity;
+  List<ResponseMessageDataMessages>? message;
+
+  getMessages(String ticketId, {required BuildContext context}) async {
+    messageEntity = await ApiService().getMessages(ticketId);
+    message = messageEntity?.data.messages;
+    notifyListeners();
+  }
+
+  sendMessages(String ticketId, String mess,
+      {required BuildContext context}) async {
+    messageEntity = await ApiService().sendMessages(ticketId, mess);
+    message = messageEntity?.data.messages;
     notifyListeners();
   }
 

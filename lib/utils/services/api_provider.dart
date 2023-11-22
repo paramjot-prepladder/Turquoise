@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/model/tickets/response_all_tickets_entity.dart';
 import '../../generated/json/base/json_convert_content.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,7 +68,47 @@ class ApiService {
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
 
+  Future<ResponseMessageEntity?> getMessages(String ticketId) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.get(
+          Uri.parse("${baseUrl}api/message?ticket_id=$ticketId)"),
+          headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseMessageEntity?> sendMessages(
+      String ticketId, String message) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      Map<String, String> body = Map();
+      body['ticket_id'] = ticketId;
+      body['message'] = message;
+      http.Response data = await http.post(
+          Uri.parse("${baseUrl}api/message"),
+          body: body,
+          headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
       } else {
         return Future.error(data.statusCode);
@@ -89,7 +130,6 @@ class ApiService {
 
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
-        ;
       } else {
         return Future.error(data.statusCode);
       }

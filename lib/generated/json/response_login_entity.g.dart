@@ -1,5 +1,5 @@
-import '../../model/login/response_login_entity.dart';
-import 'base/json_convert_content.dart';
+import 'package:testing/generated/json/base/json_convert_content.dart';
+import 'package:testing/model/login/response_login_entity.dart';
 
 ResponseLoginEntity $ResponseLoginEntityFromJson(Map<String, dynamic> json) {
   final ResponseLoginEntity responseLoginEntity = ResponseLoginEntity();
@@ -94,7 +94,6 @@ ResponseLoginDataUser $ResponseLoginDataUserFromJson(
   if (email != null) {
     responseLoginDataUser.email = email;
   }
-
   return responseLoginDataUser;
 }
 
@@ -112,9 +111,6 @@ extension ResponseLoginDataUserExtension on ResponseLoginDataUser {
     int? id,
     String? name,
     String? email,
-    dynamic emailVerifiedAt,
-    String? createdAt,
-    String? updatedAt,
   }) {
     return ResponseLoginDataUser()
       ..id = id ?? this.id

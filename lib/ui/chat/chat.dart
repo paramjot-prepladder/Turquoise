@@ -1,10 +1,24 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:testing/model/chat/response_message_entity.dart';
+import 'package:testing/utils/common/common_widgets.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../../provider/login_provider.dart';
+import '../../utils/color/app_colors.dart';
+import '../../utils/common/text_field.dart';
 
 class Chat extends StatefulWidget {
-  const Chat({super.key});
+  final String ticketId;
+
+  const Chat({super.key, required this.ticketId});
 
   @override
-  State<StatefulWidget> createState() => _ChatState();
+  State<StatefulWidget> createState() => _ChatState(ticketId);
 }
 
 final items = List<MessageTile>.generate(
@@ -13,18 +27,155 @@ final items = List<MessageTile>.generate(
 );
 
 class _ChatState extends State<Chat> {
+  final String ticket;
+  var _isLoading = false;
+  final ScrollController _controller = ScrollController();
+
+  _ChatState(this.ticket);
+
+  late TextEditingController _messageCtrl;
+
+  @override
+  void initState() {
+    _messageCtrl = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-            body: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return MessageTile(
-                    message: items[index].message,
-                    sendByMe: items[index].sendByMe,
-                  );
-                })) /**/
-        ;
+    // Timer(const Duration(milliseconds: 500), () => _scrollDown());
+
+    return ChangeNotifierProvider(
+        create: (context) => LoginProvider(),
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: AppColors.liteBlack,
+              title: const Text('Messages'),
+            ),
+            backgroundColor: AppColors.whiteText,
+            body: Consumer<LoginProvider>(
+              builder: (context, loginProvider, child) {
+                return FutureProvider(
+                    create: (_) {
+                      return loginProvider.getMessages(ticket,
+                          context: context);
+                    },
+                    lazy: false,
+                    initialData: ResponseMessageDataMessages(),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                            child: Container(
+                          child: loginProvider.message != null
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  controller: _controller,
+                                  itemCount: loginProvider.message?.length,
+                                  itemBuilder: (context, index) {
+                                    return MessageTile(
+                                      message:
+                                          loginProvider.message![index].message,
+                                      sendByMe: loginProvider
+                                                  .message![index].isAdmin ==
+                                              0
+                                          ? false
+                                          : true,
+                                    );
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.greenPrimary,
+                                  ),
+                                ),
+                        )),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Expanded(
+                                  child: TextField(
+                                    decoration: const InputDecoration(
+                                      hintText: 'Message to send',
+                                    ),
+                                    controller: _messageCtrl,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: button(
+                                text: "Send",
+                                onTap: () {
+                                  _sendChat(loginProvider);
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                        /*Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Expanded(
+                                child: TextField(
+                                  controller: _messageCtrl,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: button(
+                                text: "Send",
+                                onTap: () {
+                                  _sendChat(loginProvider);
+                                },
+                              ),
+                            )
+                          ],
+                        ),*/
+                      ],
+                    ));
+              },
+            )));
+  }
+
+  _sendChat(LoginProvider loginProvider) async {
+    setState(() => _isLoading = true);
+    if (_messageCtrl.text.isEmpty) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter message to send.",
+        ),
+      );
+    }
+
+    var result = await loginProvider.sendMessages(ticket, _messageCtrl.text,
+        context: context);
+    setState(() => _isLoading = false);
+    _messageCtrl.clear();
+    _scrollDown();
+    /*  if (result?.status == true) {
+
+    } else {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: result?.message != null ? result!.message : 'Error',
+        ),
+      );
+      if (kDebugMode) {
+        print(result!.message);
+      }
+    }*/
+  }
+
+  void _scrollDown() {
+    _controller.jumpTo(_controller.position.maxScrollExtent);
   }
 }
 
@@ -37,7 +188,6 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
       padding: EdgeInsets.only(
           top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
       alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,

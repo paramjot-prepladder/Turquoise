@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:testing/ui/cart/cart.dart';
 import 'package:testing/ui/register/register.dart';
+import 'package:testing/utils/color/app_colors.dart';
 
 import '../chat/chat.dart';
 import '../menu/menu.dart';
@@ -18,20 +20,22 @@ class _TabHome extends State<TabHome> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: AppColors.greenPrimary,
             bottom: const TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.home)),
                 Tab(icon: Icon(Icons.settings)),
               ],
             ),
-            title: const Text('Tabs Demo'),
+            title: const Text('Turquoise'),
           ),
           body: const TabBarView(
-            children: [MenuScreen(), Chat()],
+            children: [MenuScreen(), Cart()],
           ),
         ),
       ),
