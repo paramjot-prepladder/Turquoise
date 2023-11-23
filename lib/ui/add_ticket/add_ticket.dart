@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:testing/utils/common/common_widgets.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../model/product/response_p_entity.dart';
 import '../../provider/login_provider.dart';
@@ -18,78 +21,128 @@ class AddTicket extends StatefulWidget {
 String dropdownValue = "name";
 
 class _AddTicket extends State<AddTicket> {
+  late TextEditingController _messageCtrl;
+  late TextEditingController _noteCtrl;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    _messageCtrl = TextEditingController();
+    _noteCtrl = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: AppColors.liteBlack,
-            title: const Text('Menu info'),
+            backgroundColor: AppColors.greenPrimary,
+            title: const Text('Add Ticket'),
           ),
           backgroundColor: AppColors.whiteText,
-          body: Consumer<LoginProvider>(
-            builder: (context, loginProvider, child) {
-              return FutureProvider(
-                  create: (_) {
-                    return loginProvider.menuApi(context: context);
+          body: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                child: Consumer<LoginProvider>(
+                  builder: (context, loginProvider, child) {
+                    return FutureProvider(
+                        create: (_) {
+                          return loginProvider.menuApi(context: context);
+                        },
+                        lazy: false,
+                        initialData: ResponsePData(),
+                        child: loginProvider.listProduct?.data != null
+                            ? DropdownMenu<String>(
+                                initialSelection: loginProvider
+                                    .listProduct?.data.products.first.name,
+                                onSelected: (String? value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    dropdownValue = value!;
+                                  });
+                                },
+                                dropdownMenuEntries: loginProvider.s!
+                                    .map<DropdownMenuEntry<String>>(
+                                        (String value) {
+                                  return DropdownMenuEntry<String>(
+                                      value: value, label: value);
+                                }).toList(),
+                              )
+                            : const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.pinkText,
+                                ),
+                              ));
                   },
-                  lazy: false,
-                  initialData: ResponsePData(),
-                  child: loginProvider.listProduct?.data != null
-                      ? DropdownMenu<String>(
-                          initialSelection: loginProvider
-                              .listProduct?.data.products.first.name,
-                          onSelected: (String? value) {
-                            // This is called when the user selects an item.
-                            setState(() {
-                              dropdownValue = value!;
-                            });
-                          },
-                          dropdownMenuEntries: loginProvider.s!
-                              .map<DropdownMenuEntry<String>>((String value) {
-                            return DropdownMenuEntry<String>(
-                                value: value, label: value);
-                          }).toList(),
-                        )
-                      /*ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:
-                              loginProvider.listProduct?.data.products.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                debugPrint(
-                                    "click child  ${loginProvider.listProduct?.data.products[index].name}");
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    height: 60,
-                                    width: double.infinity,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                          '${loginProvider.listProduct?.data.products[index].name}',
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                              color: AppColors.liteBlack,
-                                              fontSize: 20)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        )*/
-                      : const Center(
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Serial Number',
+                  ),
+                  controller: _messageCtrl,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Note',
+                  ),
+                  controller: _noteCtrl,
+                ),
+              ),
+              Consumer<LoginProvider>(
+                builder: (context, loginProvider, _) {
+                  return _isLoading
+                      ? const Center(
                           child: CircularProgressIndicator(
                             color: AppColors.pinkText,
                           ),
-                        ));
-            },
+                        )
+                      : button(
+                          text: 'Create Ticket',
+                          onTap: () {
+                            debugPrint('prinint: login');
+                            _onTapBtn(loginProvider);
+                          },
+                        );
+                },
+              )
+            ],
           ),
         ));
+  }
+
+  _onTapBtn(LoginProvider loginProvider) async{
+    setState(() => _isLoading = true);
+    if (_messageCtrl.text.isEmpty) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Serial Number.",
+        ),
+      );
+    } else if (_noteCtrl.text.isEmpty) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Note.",
+        ),
+      );
+    }
+    Map<String, String> body = Map();
+    body['product_id'] = dropdownValue;
+    body['serial_number'] = _messageCtrl.text;
+    body['note'] = _noteCtrl.text;
+    var result = await loginProvider.createTicket(body, context: context);
+    setState(() => _isLoading = false);
   }
 }

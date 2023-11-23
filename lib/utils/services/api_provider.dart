@@ -82,7 +82,25 @@ class ApiService {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.get(
-          Uri.parse("${baseUrl}api/message?ticket_id=$ticketId)"),
+          Uri.parse("${baseUrl}api/message?ticket_id=$ticketId"),
+          headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseMessageEntity?> createTicket( Map<String, String> body) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.post(
+          Uri.parse("${baseUrl}api/ticket"),body: body,
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {

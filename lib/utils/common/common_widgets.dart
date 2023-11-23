@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testing/utils/color/app_colors.dart';
 
 Widget button({
   Color? color,
@@ -16,7 +17,7 @@ Widget button({
         onTap();
       },
       style: ElevatedButton.styleFrom(
-        primary: Colors.purple,
+        backgroundColor: AppColors.greenPrimary,
         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         textStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
       ),

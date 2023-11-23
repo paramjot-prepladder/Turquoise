@@ -48,7 +48,7 @@ class _ChatState extends State<Chat> {
         create: (context) => LoginProvider(),
         child: Scaffold(
             appBar: AppBar(
-              backgroundColor: AppColors.liteBlack,
+              backgroundColor: AppColors.greenPrimary,
               title: const Text('Messages'),
             ),
             backgroundColor: AppColors.whiteText,
@@ -104,9 +104,9 @@ class _ChatState extends State<Chat> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: button(
-                                text: "Send",
+                                text: "Sendi",
                                 onTap: () {
                                   _sendChat(loginProvider);
                                 },
@@ -114,29 +114,6 @@ class _ChatState extends State<Chat> {
                             )
                           ],
                         ),
-                        /*Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Expanded(
-                                child: TextField(
-                                  controller: _messageCtrl,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: button(
-                                text: "Send",
-                                onTap: () {
-                                  _sendChat(loginProvider);
-                                },
-                              ),
-                            )
-                          ],
-                        ),*/
                       ],
                     ));
               },

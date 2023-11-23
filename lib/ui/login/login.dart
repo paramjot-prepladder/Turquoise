@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: AppColors.whiteText,
           appBar: AppBar(
             title: const Text('Login'),
-            backgroundColor: AppColors.greylight,
+            backgroundColor: AppColors.greenPrimary,
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -166,13 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  void _onSubmit() {
-    setState(() => _isLoading = true);
-    Future.delayed(
-      const Duration(seconds: 2),
-      () => setState(() => _isLoading = false),
-    );
-  }
 
   onTapBtn(LoginProvider loginProvider) async {
     setState(() => _isLoading = true);

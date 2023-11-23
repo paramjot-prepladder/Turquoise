@@ -5,6 +5,7 @@ import 'package:testing/ui/home_tab/tab.dart';
 import 'package:testing/ui/login/login.dart';
 import 'package:testing/ui/menu/menu.dart';
 import 'package:testing/ui/register/register.dart';
+import 'package:testing/utils/color/app_colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) => MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                colorScheme: ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
                 useMaterial3: true,
               ),
               debugShowCheckedModeBanner: false,

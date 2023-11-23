@@ -37,10 +37,6 @@ class _MenuScreenState extends State<MenuScreen> {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
         child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: AppColors.liteBlack,
-              title: const Text('Tickets'),
-            ),
             backgroundColor: AppColors.whiteText,
             body: Consumer<LoginProvider>(
               builder: (context, loginProvider, child) {
@@ -60,20 +56,34 @@ class _MenuScreenState extends State<MenuScreen> {
                                   _openChat(loginProvider.ticket?[index].id
                                       .toString());
                                 },
-                                child: Column(
+                                child: Row(
                                   children: [
-                                    Container(
+                                    Expanded(
+                                        child: Container(
                                       padding: const EdgeInsets.only(left: 10),
                                       height: 60,
                                       width: double.infinity,
                                       child: Align(
-                                        alignment: Alignment.center,
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
-                                            '${loginProvider.ticket?[index].type}',
+                                            '${loginProvider.ticket?[index].type} ${loginProvider.ticket?[index].id}',
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(
                                                 color: AppColors.liteBlack,
                                                 fontSize: 20)),
+                                      ),
+                                    )),
+                                    Container(
+                                      color: AppColors.greenPrimary,
+                                      padding: const EdgeInsets.all(10),
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: const Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Complete",
+                                          style: TextStyle(
+                                              color: AppColors.whiteText),
+                                        ),
                                       ),
                                     )
                                   ],
