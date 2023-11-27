@@ -95,13 +95,47 @@ class ApiService {
     }
   }
 
-  Future<ResponseMessageEntity?> createTicket( Map<String, String> body) async {
+  Future<ResponseMessageEntity?> createTicket(Map<String, String> body) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.post(Uri.parse("${baseUrl}api/ticket"),
+          body: body, headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseMessageEntity?> changePassword(
+      Map<String, String> body) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.post(
-          Uri.parse("${baseUrl}api/ticket"),body: body,
+          Uri.parse("${baseUrl}api/change-password"),
+          body: body,
           headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseMessageEntity?> registerUser(Map<String, String> body) async {
+    try {
+      http.Response data =
+          await http.post(Uri.parse("${baseUrl}api/register"), body: body);
       debugPrint(data.body);
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
@@ -121,10 +155,8 @@ class ApiService {
       Map<String, String> body = Map();
       body['ticket_id'] = ticketId;
       body['message'] = message;
-      http.Response data = await http.post(
-          Uri.parse("${baseUrl}api/message"),
-          body: body,
-          headers: {"Authorization": token.toString()});
+      http.Response data = await http.post(Uri.parse("${baseUrl}api/message"),
+          body: body, headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));

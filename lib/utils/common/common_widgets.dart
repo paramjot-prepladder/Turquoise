@@ -10,17 +10,21 @@ Widget button({
   double? borderRadius,
 }) {
   return Container(
-    margin: EdgeInsets.only(left: 20, right: 20),
+    margin: const EdgeInsets.only(left: 20, right: 20),
     child: ElevatedButton(
-      child: Text(text ?? ''),
       onPressed: () {
         onTap();
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.greenPrimary,
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-        textStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        textStyle:  const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: AppColors.whiteText),
       ),
+      child: Text(text ?? ''),
     ),
   );
 }

@@ -24,8 +24,8 @@ class _Register extends State<Register> {
   TextEditingController? _passwordController;
   bool _registering = false;
   TextEditingController? _usernameController;
+  TextEditingController? _nameController;
   var _isLoading = false;
-  late TextEditingController _passwordCtrl;
   late TextEditingController _confirmPasswordCtrl;
 
   @override
@@ -41,9 +41,10 @@ class _Register extends State<Register> {
     _usernameController = TextEditingController(
       text: _email,
     );
-    _passwordCtrl = TextEditingController();
-    _confirmPasswordCtrl = TextEditingController();
+    _nameController = TextEditingController(text: '');
+    _confirmPasswordCtrl = TextEditingController(text: '');
   }
+
   void _register() async {
     FocusScope.of(context).unfocus();
 
@@ -54,120 +55,222 @@ class _Register extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register',style: TextStyle(
-          color: Colors.white
-        ),),
-        backgroundColor: AppColors.greenPrimary,
-      ),
-      backgroundColor: AppColors.whiteText,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
-          child: Column(
-            children: [
-              TextField(
-                autocorrect: false,
-                autofillHints: _registering ? null : [AutofillHints.email],
-                autofocus: true,
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  labelText: 'Email',
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.cancel),
-                    onPressed: () => _usernameController?.clear(),
-                  ),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                onEditingComplete: () {
-                  _focusNode?.requestFocus();
-                },
-                readOnly: _registering,
-                textCapitalization: TextCapitalization.none,
-                textInputAction: TextInputAction.next,
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: TextField(
-                  autocorrect: false,
-                  autofillHints: _registering ? null : [AutofillHints.password],
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8),
+    return ChangeNotifierProvider(
+        create: (context) => LoginProvider(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Register',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: AppColors.greenPrimary,
+          ),
+          backgroundColor: AppColors.whiteText,
+          body: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
+              child: Column(
+                children: [
+                  TextField(
+                    autocorrect: false,
+                    autofillHints: _registering ? null : [AutofillHints.email],
+                    autofocus: true,
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      labelText: 'Name',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () => _nameController?.clear(),
                       ),
                     ),
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.cancel),
-                      onPressed: () => _passwordController?.clear(),
+                    keyboardType: TextInputType.emailAddress,
+                    onEditingComplete: () {
+                      _focusNode?.requestFocus();
+                    },
+                    readOnly: _registering,
+                    textCapitalization: TextCapitalization.none,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextField(
+                      autocorrect: false,
+                      autofillHints:
+                          _registering ? null : [AutofillHints.email],
+                      autofocus: true,
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        labelText: 'Email',
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () => _usernameController?.clear(),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      onEditingComplete: () {
+                        _focusNode?.requestFocus();
+                      },
+                      readOnly: _registering,
+                      textCapitalization: TextCapitalization.none,
+                      textInputAction: TextInputAction.next,
                     ),
                   ),
-                  focusNode: _focusNode,
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: true,
-                  onEditingComplete: _register,
-                  textCapitalization: TextCapitalization.none,
-                  textInputAction: TextInputAction.done,
-                ),
-              ),
-              TextButton(
-                onPressed: _registering ? null : _register,
-                child: const Text('Register'),
-              ),
-              Consumer<LoginProvider>(
-                builder: (context, loginProvider, _) {
-                  return _isLoading
-                      ? const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.pinkText,
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextField(
+                      autocorrect: false,
+                      autofillHints:
+                          _registering ? null : [AutofillHints.password],
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () => _passwordController?.clear(),
+                        ),
+                      ),
+                      focusNode: _focusNode,
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: true,
+                      onEditingComplete: _register,
+                      textCapitalization: TextCapitalization.none,
+                      textInputAction: TextInputAction.done,
                     ),
-                  )
-                      : button(
-                    text: 'Create Ticket',
-                    onTap: () {
-                      debugPrint('prinint: login');
-                      _onTapBtn(loginProvider);
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: TextField(
+                      autocorrect: false,
+                      autofillHints:
+                          _registering ? null : [AutofillHints.password],
+                      controller: _confirmPasswordCtrl,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        labelText: 'Confirm Password',
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () => _confirmPasswordCtrl.clear(),
+                        ),
+                      ),
+                      // focusNode: _focusNode,
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: true,
+                      onEditingComplete: _register,
+                      textCapitalization: TextCapitalization.none,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+
+                  Consumer<LoginProvider>(
+                    builder: (context, loginProvider, _) {
+                      return _isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.pinkText,
+                              ),
+                            )
+                          : button(
+                              text: 'Register',
+                              onTap: () {
+                                _onTapBtn(loginProvider);
+                              },
+                            );
                     },
-                  );
-                },
-              )
-            ],
+                  )
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Future<void> _onTapBtn(LoginProvider loginProvider) async {
-    setState(() => _isLoading = true);
-    if (_passwordCtrl.text.isEmpty) {
+
+    if (_nameController?.text.isEmpty == true) {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
-          message: "Kindly enter Serial Number.",
+          message: "Kindly enter Name.",
         ),
       );
+      return;
+    } else if (_usernameController?.text.isEmpty == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Email.",
+        ),
+      );
+      return;
+    } else if (!isEmail(_usernameController?.text??'')) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter valid Email.",
+        ),
+      );
+      return;
+    } else if (_passwordController?.text.isEmpty == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Password.",
+        ),
+      );
+      return;
     } else if (_confirmPasswordCtrl.text.isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
-          message: "Kindly enter Note.",
+          message: "Kindly enter Confirm Password.",
+        ),
+      );
+      return;
+    }
+
+    if (_passwordController?.text == _confirmPasswordCtrl.text) {
+      setState(() => _isLoading = true);
+      Map<String, String> body = Map();
+      body['name'] = _nameController?.text ?? '';
+      body['email'] = _usernameController?.text ?? '';
+      body['password'] = _passwordController?.text ?? '';
+      body['confirm_password'] = _confirmPasswordCtrl.text;
+      var result = await loginProvider.registerUser(body, context: context);
+      setState(() => _isLoading = false);
+    }else{
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "The password doesn't match.",
         ),
       );
     }
-    Map<String, String> body = Map();
-    body['product_id'] = dropdownValue;
-    body['password'] = _passwordCtrl.text;
-    body['confirm_password'] = _confirmPasswordCtrl.text;
-    var result = await loginProvider.createTicket(body, context: context);
-    setState(() => _isLoading = false);
+  }
+  bool isEmail(String em) {
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+    RegExp regExp = new RegExp(p);
+
+    return regExp.hasMatch(em);
   }
 }

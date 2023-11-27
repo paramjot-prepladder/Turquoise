@@ -61,7 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Scaffold(
           backgroundColor: AppColors.whiteText,
           appBar: AppBar(
-            title: const Text('Login'),
+            title: const Text(
+              'Login',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: AppColors.greenPrimary,
           ),
           body: SingleChildScrollView(
@@ -166,7 +169,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-
   onTapBtn(LoginProvider loginProvider) async {
     setState(() => _isLoading = true);
     if (_emailCtrl.text.isEmpty) {
@@ -199,6 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(
           'token', '${result?.data.tokenType} ${result?.data.token}');
+      Navigator.pop(context);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const TabHome()),

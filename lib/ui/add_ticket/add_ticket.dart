@@ -121,7 +121,7 @@ class _AddTicket extends State<AddTicket> {
         ));
   }
 
-  _onTapBtn(LoginProvider loginProvider) async{
+  _onTapBtn(LoginProvider loginProvider) async {
     setState(() => _isLoading = true);
     if (_messageCtrl.text.isEmpty) {
       showTopSnackBar(
@@ -144,5 +144,15 @@ class _AddTicket extends State<AddTicket> {
     body['note'] = _noteCtrl.text;
     var result = await loginProvider.createTicket(body, context: context);
     setState(() => _isLoading = false);
+    if (result?.status == true) {
+      Navigator.pop(context);
+    } else {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: result?.message ?? '',
+        ),
+      );
+    }
   }
 }

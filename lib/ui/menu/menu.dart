@@ -66,7 +66,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                            '${loginProvider.ticket?[index].type} ${loginProvider.ticket?[index].id}',
+                                            '${loginProvider.ticket?[index].productName} ${loginProvider.ticket?[index].id}',
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(
                                                 color: AppColors.liteBlack,
@@ -77,11 +77,11 @@ class _MenuScreenState extends State<MenuScreen> {
                                       color: AppColors.greenPrimary,
                                       padding: const EdgeInsets.all(10),
                                       margin: const EdgeInsets.only(right: 10),
-                                      child: const Align(
+                                      child: Align(
                                         alignment: Alignment.center,
                                         child: Text(
-                                          "Complete",
-                                          style: TextStyle(
+                                          '${loginProvider.ticket?[index].ticketStatus}',
+                                          style: const TextStyle(
                                               color: AppColors.whiteText),
                                         ),
                                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testing/ui/cart/cart.dart';
 import 'package:testing/ui/register/register.dart';
+import 'package:testing/ui/settings/settings.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
 import '../chat/chat.dart';
@@ -35,7 +36,7 @@ class _TabHome extends State<TabHome> {
             title: const Text('Turquoise'),
           ),
           body: const TabBarView(
-            children: [MenuScreen(), Cart()],
+            children: [MenuScreen(), Settings()],
           ),
         ),
       ),

@@ -83,6 +83,10 @@ ResponseAllTicketsDataTicket $ResponseAllTicketsDataTicketFromJson(
   if (productId != null) {
     responseAllTicketsDataTicket.productId = productId;
   }
+  final String? productName = jsonConvert.convert<String>(json['product_name']);
+  if (productName != null) {
+    responseAllTicketsDataTicket.productName = productName;
+  }
   final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
     responseAllTicketsDataTicket.userId = userId;
@@ -115,6 +119,7 @@ Map<String, dynamic> $ResponseAllTicketsDataTicketToJson(
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['product_id'] = entity.productId;
+  data['product_name'] = entity.productName;
   data['user_id'] = entity.userId;
   data['type'] = entity.type;
   data['ticket_status'] = entity.ticketStatus;
@@ -133,11 +138,13 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
     dynamic ticketStatus,
     int? status,
     String? createdAt,
+    String? productName,
     String? updatedAt,
   }) {
     return ResponseAllTicketsDataTicket()
       ..id = id ?? this.id
       ..productId = productId ?? this.productId
+      ..productName = productName ?? this.productName
       ..userId = userId ?? this.userId
       ..type = type ?? this.type
       ..ticketStatus = ticketStatus ?? this.ticketStatus

@@ -42,6 +42,8 @@ class ResponseAllTicketsDataTicket {
 	late int id;
 	@JSONField(name: "product_id")
 	late int productId;
+	@JSONField(name: "product_name")
+	late String productName;
 	@JSONField(name: "user_id")
 	late int userId;
 	late String type;
