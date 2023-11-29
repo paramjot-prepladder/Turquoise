@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/ui/change_password.dart';
 import 'package:testing/ui/login/login.dart';
 
+import '../../main.dart';
+
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
@@ -45,7 +47,7 @@ class _Settings extends State<Settings> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
+                        builder: (context) => const MyApp()),
                   );
                 },
               )

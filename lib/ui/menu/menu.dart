@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:testing/ui/add_ticket/add_ticket.dart';
@@ -16,20 +17,42 @@ class MenuScreen extends StatefulWidget {
   _MenuScreenState createState() => _MenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   MenuProvider? provider;
+  bool shouldCallApi = true;
 
   @override
   void initState() {
     super.initState();
+
     // providerInit();
-    //  WidgetsBinding.instance?.addPostFrameCallback(
-    //       (_) => _provider?.fundsWithCategory(context: context));
+    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance?.addPostFrameCallback(
+    //      (_) => _provider?.fundsWithCategory(context: context));
   }
 
-  providerInit() {
-    provider = Provider.of<MenuProvider>(context, listen: false);
-    provider?.menuApi(context: context);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("here with bang dispose ${state}");
+    if (state == AppLifecycleState.resumed) {}
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    debugPrint("here with bang dispose");
+    super.dispose();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    debugPrint("here with bang reassemble");
+  }
+
+  @override
+  void activate() {
+    super.activate();
   }
 
   @override
@@ -40,62 +63,59 @@ class _MenuScreenState extends State<MenuScreen> {
             backgroundColor: AppColors.whiteText,
             body: Consumer<LoginProvider>(
               builder: (context, loginProvider, child) {
-                return FutureProvider(
-                    create: (_) {
-                      return loginProvider.getTickets(context: context);
-                    },
-                    lazy: false,
-                    initialData: ResponsePData(),
-                    child: loginProvider.ticket != null
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: loginProvider.ticket?.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _openChat(loginProvider.ticket?[index].id
-                                      .toString());
-                                },
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        child: Container(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      height: 60,
-                                      width: double.infinity,
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                            '${loginProvider.ticket?[index].productName} ${loginProvider.ticket?[index].id}',
-                                            textAlign: TextAlign.start,
-                                            style: const TextStyle(
-                                                color: AppColors.liteBlack,
-                                                fontSize: 20)),
-                                      ),
-                                    )),
-                                    Container(
-                                      color: AppColors.greenPrimary,
-                                      padding: const EdgeInsets.all(10),
-                                      margin: const EdgeInsets.only(right: 10),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          '${loginProvider.ticket?[index].ticketStatus}',
-                                          style: const TextStyle(
-                                              color: AppColors.whiteText),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
+                if (shouldCallApi) {
+                  callFuture(loginProvider);
+                }
+                return loginProvider.ticket != null
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: loginProvider.ticket?.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              _openChat(
+                                  loginProvider.ticket?[index].id.toString());
                             },
-                          )
-                        : const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.greenPrimary,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '${loginProvider.ticket?[index].productName} ${loginProvider.ticket?[index].id}',
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                            color: AppColors.liteBlack,
+                                            fontSize: 20)),
+                                  ),
+                                )),
+                                Container(
+                                  color: AppColors.greenPrimary,
+                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.only(right: 10),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${loginProvider.ticket?[index].ticketStatus}',
+                                      style: const TextStyle(
+                                          color: AppColors.whiteText),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
-                          ));
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.greenPrimary,
+                        ),
+                      );
               },
             ),
             floatingActionButton: FloatingActionButton(
@@ -106,6 +126,13 @@ class _MenuScreenState extends State<MenuScreen> {
             )));
   }
 
+  void callFuture(LoginProvider loginProvider) async {
+    await loginProvider.getTickets(context: context);
+    setState(() {
+      shouldCallApi = false;
+    });
+  }
+
   void _openChat(String? ticket) {
     Navigator.push(
       context,
@@ -113,10 +140,17 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _incrementCounter() {
-    Navigator.push(
+  Future<void> _incrementCounter() async {
+
+    final bool? shouldRefresh = await  Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddTicket()),
     );
+    debugPrint("here with bang _incrementCounter $shouldRefresh");
+    if (shouldRefresh ?? false) {
+      setState(() {
+        shouldCallApi = true;
+      });
+    }
   }
 }

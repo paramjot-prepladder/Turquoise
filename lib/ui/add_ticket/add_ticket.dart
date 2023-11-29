@@ -64,11 +64,11 @@ class _AddTicket extends State<AddTicket> {
                                     dropdownValue = value!;
                                   });
                                 },
-                                dropdownMenuEntries: loginProvider.s!
+                                dropdownMenuEntries: loginProvider.listProduct!.data.products
                                     .map<DropdownMenuEntry<String>>(
-                                        (String value) {
+                                        (ResponsePDataProducts value) {
                                   return DropdownMenuEntry<String>(
-                                      value: value, label: value);
+                                      value: value.id.toString(), label: value.name);
                                 }).toList(),
                               )
                             : const Center(
@@ -121,6 +121,7 @@ class _AddTicket extends State<AddTicket> {
         ));
   }
 
+
   _onTapBtn(LoginProvider loginProvider) async {
     setState(() => _isLoading = true);
     if (_messageCtrl.text.isEmpty) {
@@ -138,6 +139,7 @@ class _AddTicket extends State<AddTicket> {
         ),
       );
     }
+    debugPrint('movieTitle_dropdownValue: ${dropdownValue}');
     Map<String, String> body = Map();
     body['product_id'] = dropdownValue;
     body['serial_number'] = _messageCtrl.text;
@@ -145,7 +147,8 @@ class _AddTicket extends State<AddTicket> {
     var result = await loginProvider.createTicket(body, context: context);
     setState(() => _isLoading = false);
     if (result?.status == true) {
-      Navigator.pop(context);
+      Navigator.of(context).pop(true);
+      // Navigator.pop(context);
     } else {
       showTopSnackBar(
         Overlay.of(context),

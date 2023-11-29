@@ -20,15 +20,9 @@ class LoginProvider extends ChangeNotifier {
   }
 
   ResponsePEntity? listProduct;
-  List<String>? s;
 
   menuApi({required BuildContext context}) async {
     listProduct = await ApiService().productList();
-    var a = listProduct?.data.products.map((e) => e.name);
-    s = a?.toList();
-    if (kDebugMode) {
-      print(a?.toList());
-    }
     notifyListeners();
   }
 
@@ -63,7 +57,7 @@ class LoginProvider extends ChangeNotifier {
   Future<ResponseMessageEntity?> createTicket(Map<String, String> body,{required BuildContext context}) async {
     return ApiService().createTicket(body);
   }
-  Future<ResponseMessageEntity?> registerUser(Map<String, String> body,{required BuildContext context}) async {
+  Future<ResponseLoginEntity?> registerUser(Map<String, String> body,{required BuildContext context}) async {
     return ApiService().registerUser(body);
   }
   Future<ResponseMessageEntity?> changePassword(Map<String, String> body,{required BuildContext context}) async {

@@ -132,7 +132,7 @@ class ApiService {
     }
   }
 
-  Future<ResponseMessageEntity?> registerUser(Map<String, String> body) async {
+  Future<ResponseLoginEntity?> registerUser(Map<String, String> body) async {
     try {
       http.Response data =
           await http.post(Uri.parse("${baseUrl}api/register"), body: body);
@@ -176,8 +176,6 @@ class ApiService {
       body['password'] = pwd;
       http.Response data =
           await http.post(Uri.parse("${baseUrl}api/login"), body: body);
-      debugPrint('movieTitle_login: ${data.body}');
-
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
       } else {
