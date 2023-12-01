@@ -112,7 +112,9 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                               );
                             },
                           )
-                        : const Text("No Ticket found")
+                        : const Center(
+                            child: Text("No Ticket found"),
+                          )
                     : const Center(
                         child: CircularProgressIndicator(
                           color: AppColors.greenPrimary,

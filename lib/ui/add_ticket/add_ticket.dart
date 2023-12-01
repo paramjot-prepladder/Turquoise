@@ -125,7 +125,7 @@ class _AddTicket extends State<AddTicket> {
 
 
   _onTapBtn(LoginProvider loginProvider) async {
-    setState(() => _isLoading = true);
+
     if (dropdownValue == "name") {
       showTopSnackBar(
         Overlay.of(context),
@@ -151,7 +151,7 @@ class _AddTicket extends State<AddTicket> {
       );
       return;
     }
-    debugPrint('movieTitle_dropdownValue: ${dropdownValue}');
+    setState(() => _isLoading = true);
     Map<String, String> body = Map();
     body['product_id'] = dropdownValue;
     body['serial_number'] = _messageCtrl.text;
