@@ -178,6 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
           message: "Kindly enter email.",
         ),
       );
+      return;
     } else if (!isEmail(_emailCtrl.text)) {
       showTopSnackBar(
         Overlay.of(context),
@@ -185,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
           message: "Kindly enter valid email.",
         ),
       );
+      return;
     } else if (_pwdCtrl.text.isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
@@ -192,6 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
           message: "Kindly enter password.",
         ),
       );
+      return;
     }
 
     var result = await loginProvider.loginApi(

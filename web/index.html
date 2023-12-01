@@ -55,5 +55,29 @@
       });
     });
   </script>
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDoKw8_j244avJE5PHusFEYxpixtOB7Pz8",
+    authDomain: "moengage-ee4aa.firebaseapp.com",
+    databaseURL: "https://moengage-ee4aa.firebaseio.com",
+    projectId: "moengage-ee4aa",
+    storageBucket: "moengage-ee4aa.appspot.com",
+    messagingSenderId: "680239754125",
+    appId: "1:680239754125:web:d1f2c73765a37e48172bc4",
+    measurementId: "G-4JJ11S03KJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>

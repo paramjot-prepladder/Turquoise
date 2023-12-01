@@ -56,6 +56,8 @@ class _AddTicket extends State<AddTicket> {
                         initialData: ResponsePData(),
                         child: loginProvider.listProduct?.data != null
                             ? DropdownMenu<String>(
+                          hintText: "Please select",
+                                width: 200,
                                 initialSelection: loginProvider
                                     .listProduct?.data.products.first.name,
                                 onSelected: (String? value) {
@@ -124,13 +126,22 @@ class _AddTicket extends State<AddTicket> {
 
   _onTapBtn(LoginProvider loginProvider) async {
     setState(() => _isLoading = true);
-    if (_messageCtrl.text.isEmpty) {
+    if (dropdownValue == "name") {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly select Product.",
+        ),
+      );
+      return;
+    }else if (_messageCtrl.text.isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
           message: "Kindly enter Serial Number.",
         ),
       );
+      return;
     } else if (_noteCtrl.text.isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
@@ -138,6 +149,7 @@ class _AddTicket extends State<AddTicket> {
           message: "Kindly enter Note.",
         ),
       );
+      return;
     }
     debugPrint('movieTitle_dropdownValue: ${dropdownValue}');
     Map<String, String> body = Map();

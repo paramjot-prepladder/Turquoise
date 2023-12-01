@@ -40,7 +40,7 @@ class _ChangePassword extends State<ChangePassword> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text(
-              'Register',
+              'Change Password',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: AppColors.greenPrimary,

@@ -67,50 +67,52 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                   callFuture(loginProvider);
                 }
                 return loginProvider.ticket != null
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: loginProvider.ticket?.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              _openChat(
-                                  loginProvider.ticket?[index].id.toString());
+                    ? loginProvider.ticket?.isNotEmpty == true
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: loginProvider.ticket?.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  _openChat(loginProvider.ticket?[index].id
+                                      .toString());
+                                },
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: Container(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      height: 60,
+                                      width: double.infinity,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            '${loginProvider.ticket?[index].productName} ${loginProvider.ticket?[index].id}',
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(
+                                                color: AppColors.liteBlack,
+                                                fontSize: 20)),
+                                      ),
+                                    )),
+                                    Container(
+                                      color: AppColors.greenPrimary,
+                                      padding: const EdgeInsets.all(10),
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          '${loginProvider.ticket?[index].ticketStatus}',
+                                          style: const TextStyle(
+                                              color: AppColors.whiteText),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
                             },
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: Container(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  height: 60,
-                                  width: double.infinity,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        '${loginProvider.ticket?[index].productName} ${loginProvider.ticket?[index].id}',
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(
-                                            color: AppColors.liteBlack,
-                                            fontSize: 20)),
-                                  ),
-                                )),
-                                Container(
-                                  color: AppColors.greenPrimary,
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.only(right: 10),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${loginProvider.ticket?[index].ticketStatus}',
-                                      style: const TextStyle(
-                                          color: AppColors.whiteText),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      )
+                          )
+                        : const Text("No Ticket found")
                     : const Center(
                         child: CircularProgressIndicator(
                           color: AppColors.greenPrimary,
@@ -141,8 +143,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _incrementCounter() async {
-
-    final bool? shouldRefresh = await  Navigator.push(
+    final bool? shouldRefresh = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddTicket()),
     );

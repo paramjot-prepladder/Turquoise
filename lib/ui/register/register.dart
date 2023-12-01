@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/utils/color/app_colors.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../provider/login_provider.dart';
 import '../../utils/common/common_widgets.dart';
+import '../home_tab/tab.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -88,12 +90,12 @@ class _Register extends State<Register> {
                         onPressed: () => _nameController?.clear(),
                       ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.name,
                     onEditingComplete: () {
                       _focusNode?.requestFocus();
                     },
                     readOnly: _registering,
-                    textCapitalization: TextCapitalization.none,
+                    textCapitalization: TextCapitalization.sentences,
                     textInputAction: TextInputAction.next,
                   ),
                   Container(
@@ -179,7 +181,6 @@ class _Register extends State<Register> {
                       textInputAction: TextInputAction.done,
                     ),
                   ),
-
                   Consumer<LoginProvider>(
                     builder: (context, loginProvider, _) {
                       return _isLoading
@@ -204,7 +205,6 @@ class _Register extends State<Register> {
   }
 
   Future<void> _onTapBtn(LoginProvider loginProvider) async {
-
     if (_nameController?.text.isEmpty == true) {
       showTopSnackBar(
         Overlay.of(context),
@@ -221,7 +221,7 @@ class _Register extends State<Register> {
         ),
       );
       return;
-    } else if (!isEmail(_usernameController?.text??'')) {
+    } else if (!isEmail(_usernameController?.text ?? '')) {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
@@ -256,7 +256,22 @@ class _Register extends State<Register> {
       body['confirm_password'] = _confirmPasswordCtrl.text;
       var result = await loginProvider.registerUser(body, context: context);
       setState(() => _isLoading = false);
-    }else{
+
+      if (result?.status == true) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+            'token', '${result?.data.tokenType} ${result?.data.token}');
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const TabHome()), (route) => false);
+
+      } else {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.error(
+            message: result?.message != null ? result!.message : 'Error',
+          ),
+        );
+      }
+    } else {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
@@ -265,6 +280,7 @@ class _Register extends State<Register> {
       );
     }
   }
+
   bool isEmail(String em) {
     String p =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
