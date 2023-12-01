@@ -93,20 +93,18 @@ class _ChatState extends State<Chat> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
-                                child: Expanded(
-                                  child: TextField(
-                                    decoration: const InputDecoration(
-                                      hintText: 'Message to send',
-                                    ),
-                                    controller: _messageCtrl,
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    hintText: 'Message to send',
                                   ),
+                                  controller: _messageCtrl,
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.only(left: 10),
                               child: button(
-                                text: "Sendi",
+                                text: "Send",
                                 onTap: () {
                                   _sendChat(loginProvider);
                                 },
