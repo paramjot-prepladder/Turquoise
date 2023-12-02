@@ -201,6 +201,12 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailCtrl.text, pwd: _pwdCtrl.text, context: context);
     setState(() => _isLoading = false);
     if (result?.status == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(
+          message: result?.message ?? '',
+        ),
+      );
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(
           'token', '${result?.data.tokenType} ${result?.data.token}');

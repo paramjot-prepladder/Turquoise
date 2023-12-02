@@ -30,6 +30,7 @@ class _ChatState extends State<Chat> {
   final String ticket;
   var _isLoading = false;
   final ScrollController _controller = ScrollController();
+  bool shouldCallApi = true;
 
   _ChatState(this.ticket);
 
@@ -48,74 +49,88 @@ class _ChatState extends State<Chat> {
         create: (context) => LoginProvider(),
         child: Scaffold(
             appBar: AppBar(
-              backgroundColor: AppColors.greenPrimary,
-              title: const Text('Messages'),
-            ),
+                backgroundColor: AppColors.greenPrimary,
+                title: const Text('Messages'),
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.refresh_rounded),
+                    tooltip: "Refresh Chat",
+                    onPressed: () {
+                      setState(() {
+                        shouldCallApi = true;
+                      });
+                    },
+                  ),
+                ]),
             backgroundColor: AppColors.whiteText,
             body: Consumer<LoginProvider>(
               builder: (context, loginProvider, child) {
-                return FutureProvider(
-                    create: (_) {
-                      return loginProvider.getMessages(ticket,
-                          context: context);
-                    },
-                    lazy: false,
-                    initialData: ResponseMessageDataMessages(),
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                            child: Container(
-                          child: loginProvider.message != null
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  controller: _controller,
-                                  itemCount: loginProvider.message?.length,
-                                  itemBuilder: (context, index) {
-                                    return MessageTile(
-                                      message:
-                                          loginProvider.message![index].message,
-                                      sendByMe: loginProvider
-                                                  .message![index].isAdmin ==
-                                              0
+                if (shouldCallApi) {
+                  callFuture(loginProvider);
+                }
+                return Column(
+                  children: <Widget>[
+                    Expanded(
+                        child: Container(
+                      child: loginProvider.message != null
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              itemCount: loginProvider.message?.length,
+                              itemBuilder: (context, index) {
+                                return MessageTile(
+                                  message:
+                                      loginProvider.message![index].message,
+                                  sendByMe:
+                                      loginProvider.message![index].isAdmin ==
+                                              "1"
                                           ? false
                                           : true,
-                                    );
-                                  },
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.greenPrimary,
-                                  ),
-                                ),
-                        )),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: TextField(
-                                  decoration: const InputDecoration(
-                                    hintText: 'Message to send',
-                                  ),
-                                  controller: _messageCtrl,
-                                ),
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.greenPrimary,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: button(
-                                text: "Send",
-                                onTap: () {
-                                  _sendChat(loginProvider);
-                                },
+                    )),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              keyboardType: TextInputType.name,
+                              decoration: const InputDecoration(
+                                hintText: 'Message to send',
                               ),
-                            )
-                          ],
+                              controller: _messageCtrl,
+                            ),
+                          ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: button(
+                            text: "Send",
+                            onTap: () {
+                              _sendChat(loginProvider);
+                            },
+                          ),
+                        )
                       ],
-                    ));
+                    ),
+                  ],
+                );
               },
             )));
+  }
+
+  void callFuture(LoginProvider loginProvider) async {
+    await loginProvider.getMessages(ticket, context: context);
+    setState(() {
+      shouldCallApi = false;
+    });
   }
 
   _sendChat(LoginProvider loginProvider) async {
@@ -128,25 +143,11 @@ class _ChatState extends State<Chat> {
         ),
       );
     }
-
-    var result = await loginProvider.sendMessages(ticket, _messageCtrl.text,
+    await loginProvider.sendMessages(ticket, _messageCtrl.text,
         context: context);
     setState(() => _isLoading = false);
     _messageCtrl.clear();
     _scrollDown();
-    /*  if (result?.status == true) {
-
-    } else {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(
-          message: result?.message != null ? result!.message : 'Error',
-        ),
-      );
-      if (kDebugMode) {
-        print(result!.message);
-      }
-    }*/
   }
 
   void _scrollDown() {
@@ -185,7 +186,7 @@ class MessageTile extends StatelessWidget {
             gradient: LinearGradient(
               colors: sendByMe
                   ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
-                  : [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)],
+                  : [const Color(0xff22534f), const Color(0xff22534F)],
             )),
         child: Text(message,
             textAlign: TextAlign.start,

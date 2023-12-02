@@ -258,6 +258,12 @@ class _Register extends State<Register> {
       setState(() => _isLoading = false);
 
       if (result?.status == true) {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.success(
+            message: result?.message ?? '',
+          ),
+        );
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString(
             'token', '${result?.data.tokenType} ${result?.data.token}');

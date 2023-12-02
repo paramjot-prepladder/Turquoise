@@ -11,5 +11,5 @@ class AppColors {
   static const greylight = Color(0xff898787);
   static const greyDark = Color(0xff343334);
   static const iconGrey = Color(0xffADADAD);
-  static const greenPrimary = Color(0xff22534f);
+  static const greenPrimary = Color(0xff31726a);
 }
