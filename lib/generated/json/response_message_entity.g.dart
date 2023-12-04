@@ -8,8 +8,8 @@ ResponseMessageEntity $ResponseMessageEntityFromJson(
   if (status != null) {
     responseMessageEntity.status = status;
   }
-  final ResponseMessageData? data = jsonConvert.convert<ResponseMessageData>(
-      json['data']);
+  final ResponseMessageData? data =
+      jsonConvert.convert<ResponseMessageData>(json['data']);
   if (data != null) {
     responseMessageEntity.data = data;
   }
@@ -44,11 +44,11 @@ extension ResponseMessageEntityExtension on ResponseMessageEntity {
 
 ResponseMessageData $ResponseMessageDataFromJson(Map<String, dynamic> json) {
   final ResponseMessageData responseMessageData = ResponseMessageData();
-  final List<ResponseMessageDataMessages>? messages = (json['messages'] as List<
-      dynamic>?)?.map(
-          (e) =>
-      jsonConvert.convert<ResponseMessageDataMessages>(
-          e) as ResponseMessageDataMessages).toList();
+  final List<ResponseMessageDataMessages>? messages =
+      (json['messages'] as List<dynamic>?)
+          ?.map((e) => jsonConvert.convert<ResponseMessageDataMessages>(e)
+              as ResponseMessageDataMessages)
+          .toList();
   if (messages != null) {
     responseMessageData.messages = messages;
   }
@@ -65,14 +65,14 @@ extension ResponseMessageDataExtension on ResponseMessageData {
   ResponseMessageData copyWith({
     List<ResponseMessageDataMessages>? messages,
   }) {
-    return ResponseMessageData()
-      ..messages = messages ?? this.messages;
+    return ResponseMessageData()..messages = messages ?? this.messages;
   }
 }
 
 ResponseMessageDataMessages $ResponseMessageDataMessagesFromJson(
     Map<String, dynamic> json) {
-  final ResponseMessageDataMessages responseMessageDataMessages = ResponseMessageDataMessages();
+  final ResponseMessageDataMessages responseMessageDataMessages =
+      ResponseMessageDataMessages();
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
     responseMessageDataMessages.id = id;
@@ -105,6 +105,10 @@ ResponseMessageDataMessages $ResponseMessageDataMessagesFromJson(
   if (updatedAt != null) {
     responseMessageDataMessages.updatedAt = updatedAt;
   }
+  final String? time = jsonConvert.convert<String>(json['time']);
+  if (time != null) {
+    responseMessageDataMessages.time = time;
+  }
   return responseMessageDataMessages;
 }
 
@@ -119,6 +123,7 @@ Map<String, dynamic> $ResponseMessageDataMessagesToJson(
   data['status'] = entity.status;
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
+  data['time'] = entity.time;
   return data;
 }
 
@@ -132,6 +137,7 @@ extension ResponseMessageDataMessagesExtension on ResponseMessageDataMessages {
     int? status,
     String? createdAt,
     String? updatedAt,
+    String? time,
   }) {
     return ResponseMessageDataMessages()
       ..id = id ?? this.id
@@ -141,6 +147,7 @@ extension ResponseMessageDataMessagesExtension on ResponseMessageDataMessages {
       ..isAdmin = isAdmin ?? this.isAdmin
       ..status = status ?? this.status
       ..createdAt = createdAt ?? this.createdAt
-      ..updatedAt = updatedAt ?? this.updatedAt;
+      ..updatedAt = updatedAt ?? this.updatedAt
+      ..time = time ?? this.time;
   }
 }

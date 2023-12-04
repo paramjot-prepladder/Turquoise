@@ -52,6 +52,8 @@ class ResponseMessageDataMessages {
 	late String createdAt;
 	@JSONField(name: "updated_at")
 	late String updatedAt;
+	@JSONField(name: "time")
+	late String time;
 
 	ResponseMessageDataMessages();
 

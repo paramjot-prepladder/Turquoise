@@ -23,10 +23,11 @@ class Chat extends StatefulWidget {
 
 final items = List<MessageTile>.generate(
   10,
-  (i) => MessageTile(message: "message $i", sendByMe: i % 2 == 0),
+  (i) => MessageTile(
+      message: "message $i", sendByMe: i % 2 == 0, time: "2 hours ago"),
 );
 
-class _ChatState extends State<Chat> {
+class _ChatState extends State<Chat> with WidgetsBindingObserver {
   final String ticket;
   var _isLoading = false;
   final ScrollController _controller = ScrollController();
@@ -39,6 +40,42 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     _messageCtrl = TextEditingController();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("here with bang dispose ${state}");
+    super.didChangeAppLifecycleState(state);
+
+    // These are the callbacks
+    switch (state) {
+      case AppLifecycleState.resumed:
+        debugPrint("resumed");
+        // widget is resumed
+        break;
+      case AppLifecycleState.inactive:
+        debugPrint("inactive");
+        // widget is inactive
+        break;
+      case AppLifecycleState.paused:
+        debugPrint("paused");
+        // widget is paused
+        break;
+      case AppLifecycleState.detached:
+        debugPrint("detached");
+        // widget is detached
+        break;
+      case AppLifecycleState.hidden:
+        debugPrint("hidden");
+    }
   }
 
   @override
@@ -86,6 +123,7 @@ class _ChatState extends State<Chat> {
                                               "1"
                                           ? false
                                           : true,
+                                  time: loginProvider.message![index].time,
                                 );
                               },
                             )
@@ -157,41 +195,60 @@ class _ChatState extends State<Chat> {
 
 class MessageTile extends StatelessWidget {
   final String message;
+  final String time;
   final bool sendByMe;
 
-  const MessageTile({super.key, required this.message, required this.sendByMe});
+  const MessageTile(
+      {super.key,
+      required this.message,
+      required this.sendByMe,
+      required this.time});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-          top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
-      alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: sendByMe
-            ? const EdgeInsets.only(left: 30)
-            : const EdgeInsets.only(right: 30),
-        padding:
-            const EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-        decoration: BoxDecoration(
-            borderRadius: sendByMe
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomLeft: Radius.circular(23))
-                : const BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomRight: Radius.circular(23)),
-            gradient: LinearGradient(
-              colors: sendByMe
-                  ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
-                  : [const Color(0xff22534f), const Color(0xff22534F)],
-            )),
-        child: Text(message,
-            textAlign: TextAlign.start,
-            style: const TextStyle(color: Colors.white, fontSize: 16)),
-      ),
-    );
+        padding: EdgeInsets.only(
+            top: 8,
+            bottom: 8,
+            left: sendByMe ? 0 : 24,
+            right: sendByMe ? 24 : 0),
+        alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Column(
+          crossAxisAlignment:
+              sendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: sendByMe
+                  ? const EdgeInsets.only(left: 30)
+                  : const EdgeInsets.only(right: 30),
+              padding: const EdgeInsets.only(
+                  top: 17, bottom: 17, left: 20, right: 20),
+              decoration: BoxDecoration(
+                  borderRadius: sendByMe
+                      ? const BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomLeft: Radius.circular(23))
+                      : const BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomRight: Radius.circular(23)),
+                  gradient: LinearGradient(
+                    colors: sendByMe
+                        ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
+                        : [const Color(0xff22534f), const Color(0xff22534F)],
+                  )),
+              child: Text(message,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(color: Colors.white, fontSize: 16)),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              child: Text(time,
+                  style:
+                      const TextStyle(color: AppColors.greyText, fontSize: 10)),
+            )
+          ],
+        ));
   }
 }

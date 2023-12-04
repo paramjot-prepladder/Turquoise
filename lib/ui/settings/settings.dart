@@ -72,9 +72,9 @@ class _Settings extends State<Settings> {
   }
 
   void logout() async {
+    Navigator.of(context, rootNavigator: true).pop();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', '');
-    Navigator.pop(context, 'OK');
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const MyApp()),

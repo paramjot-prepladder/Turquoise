@@ -111,6 +111,14 @@ ResponseAllTicketsDataTicket $ResponseAllTicketsDataTicketFromJson(
   if (updatedAt != null) {
     responseAllTicketsDataTicket.updatedAt = updatedAt;
   }
+  final String? time = jsonConvert.convert<String>(json['time']);
+  if (time != null) {
+    responseAllTicketsDataTicket.time = time;
+  }
+  final String? unreadMessages = jsonConvert.convert<String>(json['unread_messages']);
+  if (unreadMessages != null) {
+    responseAllTicketsDataTicket.unreadMessages = unreadMessages;
+  }
   return responseAllTicketsDataTicket;
 }
 
@@ -126,6 +134,8 @@ Map<String, dynamic> $ResponseAllTicketsDataTicketToJson(
   data['status'] = entity.status;
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
+  data['time'] = entity.time;
+  data['unread_messages'] = entity.unreadMessages;
   return data;
 }
 
@@ -140,6 +150,8 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
     String? createdAt,
     String? productName,
     String? updatedAt,
+    String? unreadMessages,
+    String? time,
   }) {
     return ResponseAllTicketsDataTicket()
       ..id = id ?? this.id
@@ -150,6 +162,8 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
       ..ticketStatus = ticketStatus ?? this.ticketStatus
       ..status = status ?? this.status
       ..createdAt = createdAt ?? this.createdAt
+      ..time = createdAt ?? this.time
+      ..unreadMessages = unreadMessages ?? this.unreadMessages
       ..updatedAt = updatedAt ?? this.updatedAt;
   }
 }
