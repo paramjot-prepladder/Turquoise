@@ -172,11 +172,11 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                 );
               },
             ),
-            floatingActionButton: FloatingActionButton(
+            floatingActionButton: FloatingActionButton.extended(
               onPressed: _incrementCounter,
               backgroundColor: AppColors.greenPrimary,
               tooltip: 'Add Ticket',
-              child: const Icon(Icons.add),
+              label: const Text("Raise Ticket"),
             )));
   }
 

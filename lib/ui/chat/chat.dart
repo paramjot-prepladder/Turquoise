@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/utils/common/common_widgets.dart';
@@ -36,9 +37,11 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
   _ChatState(this.ticket);
 
   late TextEditingController _messageCtrl;
+  bool _keyboardVisible = false;
 
   @override
   void initState() {
+    super.initState();
     _messageCtrl = TextEditingController();
 
     WidgetsBinding.instance.addObserver(this);
@@ -81,7 +84,11 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     // Timer(const Duration(milliseconds: 500), () => _scrollDown());
-
+    _keyboardVisible = MediaQuery.of(context).viewInsets.bottom != 0;
+    if(_keyboardVisible) {
+      _scrollDown();
+    }
+    debugPrint(_keyboardVisible.toString());
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
         child: Scaffold(
@@ -109,6 +116,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                   children: <Widget>[
                     Expanded(
                         child: Container(
+                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: loginProvider.message != null
                           ? ListView.builder(
                               shrinkWrap: true,
@@ -140,6 +148,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                             padding: const EdgeInsets.all(10),
                             child: TextField(
                               keyboardType: TextInputType.name,
+                              textCapitalization: TextCapitalization.sentences,
                               decoration: const InputDecoration(
                                 hintText: 'Message to send',
                               ),
@@ -169,6 +178,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
     setState(() {
       shouldCallApi = false;
     });
+    _scrollDown();
   }
 
   _sendChat(LoginProvider loginProvider) async {
@@ -185,11 +195,23 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
         context: context);
     setState(() => _isLoading = false);
     _messageCtrl.clear();
-    _scrollDown();
+    scrollToBottom(_controller);
+  }
+
+  Future scrollToBottom(ScrollController scrollController) async {
+    while (scrollController.position.pixels !=
+        scrollController.position.maxScrollExtent) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      await SchedulerBinding.instance!.endOfFrame;
+    }
   }
 
   void _scrollDown() {
-    _controller.jumpTo(_controller.position.maxScrollExtent);
+    Future.delayed(const Duration(milliseconds: 300), () {
+      scrollToBottom(_controller);
+    });
+
+    // _controller.jumpTo(_controller.position.maxScrollExtent);
   }
 }
 
