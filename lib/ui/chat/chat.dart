@@ -8,6 +8,7 @@ import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/utils/common/common_widgets.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../provider/login_provider.dart';
 import '../../utils/color/app_colors.dart';
@@ -31,6 +32,8 @@ final items = List<MessageTile>.generate(
 class _ChatState extends State<Chat> with WidgetsBindingObserver {
   final String ticket;
   var _isLoading = false;
+  Timer? timer;
+  double visiblePercentage = 100;
   final ScrollController _controller = ScrollController();
   bool shouldCallApi = true;
 
@@ -85,7 +88,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     // Timer(const Duration(milliseconds: 500), () => _scrollDown());
     _keyboardVisible = MediaQuery.of(context).viewInsets.bottom != 0;
-    if(_keyboardVisible) {
+    if (_keyboardVisible) {
       _scrollDown();
     }
     debugPrint(_keyboardVisible.toString());
@@ -116,23 +119,32 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                   children: <Widget>[
                     Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: loginProvider.message != null
                           ? ListView.builder(
                               shrinkWrap: true,
                               controller: _controller,
                               itemCount: loginProvider.message?.length,
                               itemBuilder: (context, index) {
-                                return MessageTile(
-                                  message:
-                                      loginProvider.message![index].message,
-                                  sendByMe:
-                                      loginProvider.message![index].isAdmin ==
+                                return VisibilityDetector(
+                                    key: const Key('main'),
+                                    onVisibilityChanged: (visibilityInfo) {
+                                      visiblePercentage =
+                                          visibilityInfo.visibleFraction * 100;
+                                      debugPrint(
+                                          'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+                                    },
+                                    child: MessageTile(
+                                      message:
+                                          loginProvider.message![index].message,
+                                      sendByMe: loginProvider
+                                                  .message![index].isAdmin ==
                                               "1"
                                           ? false
                                           : true,
-                                  time: loginProvider.message![index].time,
-                                );
+                                      time: loginProvider.message![index].time,
+                                    ));
                               },
                             )
                           : const Center(
@@ -174,11 +186,15 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
   }
 
   void callFuture(LoginProvider loginProvider) async {
+    timer?.cancel();
     await loginProvider.getMessages(ticket, context: context);
     setState(() {
       shouldCallApi = false;
     });
-    _scrollDown();
+    if (visiblePercentage == 100) {
+      _scrollDown();
+    }
+    refreshChat();
   }
 
   _sendChat(LoginProvider loginProvider) async {
@@ -204,6 +220,18 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
       await SchedulerBinding.instance!.endOfFrame;
     }
+  }
+
+  void refreshChat() {
+    timer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        shouldCallApi = true;
+      });
+    });
+  }
+
+  void _scrollToPosition(int pos) {
+    // _controller.jumpTo(pos);
   }
 
   void _scrollDown() {
