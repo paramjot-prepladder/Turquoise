@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _emailCtrl;
   late TextEditingController _pwdCtrl;
   var _isLoading = false;
+  var _passwordVisible = false;
 
   @override
   void initState() {
@@ -47,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void _register1() async {}
+
   @override
   void dispose() {
     _pwdCtrl.dispose();
@@ -58,115 +61,150 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
-        child: Scaffold(
-          backgroundColor: AppColors.whiteText,
-          appBar: AppBar(
-            title: const Text(
-              'Login',
-              style: TextStyle(color: Colors.white),
+        child: SafeArea(
+            child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Container(
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.bottomRight,
+                fit: BoxFit.scaleDown,
+                image: AssetImage("assets/images/bulb_blue.png"),
+              ),
             ),
-            backgroundColor: AppColors.greenPrimary,
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
-              child: Column(
-                children: [
-                  TextField(
-                    autocorrect: false,
-                    autofillHints: _registering ? null : [AutofillHints.email],
-                    autofocus: true,
-                    controller: _emailCtrl,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
+                child: Column(
+                  children: [
+                    Image.asset("assets/icon/launcher_icon.png"),
+                    Container(
+                      margin: const EdgeInsets.only(top: 50),
+                      child: TextField(
+                        autocorrect: false,
+                        autofillHints:
+                            _registering ? null : [AutofillHints.email],
+                        autofocus: true,
+                        controller: _emailCtrl,
+                        decoration: const InputDecoration(
+                          // border: const OutlineInputBorder(
+                          //   borderRadius: BorderRadius.all(
+                          //     Radius.circular(8),
+                          //   ),
+                          // ),
+                          hintText: 'Email',
+                          prefixIcon: Icon(Icons.person),
+                          prefixIconColor: AppColors.greenPrimary,
+                          // suffixIcon: IconButton(
+                          //   icon: const Icon(Icons.cancel),
+                          //   onPressed: () => _emailCtrl.clear(),
+                          // ),
                         ),
-                      ),
-                      labelText: 'Email',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.cancel),
-                        onPressed: () => _emailCtrl.clear(),
+                        keyboardType: TextInputType.emailAddress,
+                        onEditingComplete: () {
+                          _focusNode?.requestFocus();
+                        },
+                        readOnly: _registering,
+                        textCapitalization: TextCapitalization.none,
+                        textInputAction: TextInputAction.next,
                       ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    onEditingComplete: () {
-                      _focusNode?.requestFocus();
-                    },
-                    readOnly: _registering,
-                    textCapitalization: TextCapitalization.none,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextField(
-                      autocorrect: false,
-                      autofillHints:
-                          _registering ? null : [AutofillHints.password],
-                      controller: _pwdCtrl,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: TextField(
+                        autocorrect: false,
+                        autofillHints:
+                            _registering ? null : [AutofillHints.password],
+                        controller: _pwdCtrl,
+                        decoration: InputDecoration(
+                          // border: const OutlineInputBorder(
+                          //   borderRadius: BorderRadius.all(
+                          //     Radius.circular(8),
+                          //   ),
+                          // ),
+                          prefixIcon: const Icon(Icons.lock),
+                          prefixIconColor: AppColors.greenPrimary,
+                          hintText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            }),
                           ),
                         ),
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () => _pwdCtrl.clear(),
-                        ),
+                        focusNode: _focusNode,
+                        keyboardType: TextInputType.emailAddress,
+                        obscureText: !_passwordVisible,
+                        onEditingComplete: _register,
+                        textCapitalization: TextCapitalization.none,
+                        textInputAction: TextInputAction.done,
                       ),
-                      focusNode: _focusNode,
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
-                      onEditingComplete: _register,
-                      textCapitalization: TextCapitalization.none,
-                      textInputAction: TextInputAction.done,
                     ),
-                  ),
-                  TextButton(
-                    onPressed: _registering ? null : _register,
-                    child: const Text('Register'),
-                  ),
-                  /*ElevatedButton.icon(
-                    onPressed: _isLoading ? null : _onSubmit,
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0)),
-                    icon: _isLoading
-                        ? Container(
-                            width: 24,
-                            height: 24,
-                            padding: const EdgeInsets.all(2.0),
-                            child: const CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 3,
-                            ),
-                          )
-                        : const Icon(Icons.feedback),
-                    label: const Text('SUBMIT'),
-                  ),*/
-                  Consumer<LoginProvider>(
-                    builder: (context, loginProvider, _) {
-                      return _isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.pinkText,
-                              ),
-                            )
-                          : button(
-                              text: 'Login',
-                              onTap: () {
-                                debugPrint('prinint: login');
-                                onTapBtn(loginProvider);
-                              },
-                            );
-                    },
-                  )
-                ],
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _register,
+                        child: const Text('Forgot Password?'),
+                      ),
+                    ),
+                    Consumer<LoginProvider>(
+                      builder: (context, loginProvider, _) {
+                        return _isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.pinkText,
+                                ),
+                              )
+                            : Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(top: 10),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    onTapBtn(loginProvider);
+                                  },
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.symmetric(
+                                            vertical: 15)),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            AppColors.greenPrimary),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            side: const BorderSide(
+                                                color:
+                                                    AppColors.greenPrimary))),
+                                  ),
+                                  child: const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.whiteText),
+                                  ),
+                                ),
+                              );
+                      },
+                    ),
+                    TextButton(onPressed: _register1, child: const Text("OR")),
+                    TextButton(
+                      onPressed: _register,
+                      child: const Text('Register'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ));
+        )));
   }
 
   onTapBtn(LoginProvider loginProvider) async {

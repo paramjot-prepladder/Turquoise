@@ -33,7 +33,7 @@ class _TabHome extends State<TabHome> {
                 Tab(icon: Icon(Icons.settings)),
               ],
             ),
-            title: const Text('Turquoise'),
+            title: const Text('TurQuoise'),
           ),
           body: const TabBarView(
             children: [MenuScreen(), Settings()],

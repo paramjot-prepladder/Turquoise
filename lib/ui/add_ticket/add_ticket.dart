@@ -35,97 +35,134 @@ class _AddTicket extends State<AddTicket> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: AppColors.greenPrimary,
-            title: const Text('Add Ticket'),
-          ),
-          backgroundColor: AppColors.whiteText,
-          body: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                child: Consumer<LoginProvider>(
-                  builder: (context, loginProvider, child) {
-                    return FutureProvider(
-                        create: (_) {
-                          return loginProvider.menuApi(context: context);
-                        },
-                        lazy: false,
-                        initialData: ResponsePData(),
-                        child: loginProvider.listProduct?.data != null
-                            ? DropdownMenu<String>(
-                          hintText: "Please select",
-                                width: 200,
-                                initialSelection: loginProvider
-                                    .listProduct?.data.products.first.name,
-                                onSelected: (String? value) {
-                                  // This is called when the user selects an item.
-                                  setState(() {
-                                    dropdownValue = value!;
-                                  });
+        child: SafeArea(
+            child: Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: AppColors.whiteText,
+                  elevation: 0,
+                  toolbarHeight: 80,
+                  flexibleSpace: Column(
+                    children: [
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new,
+                                color: AppColors.greenPrimary,
+                                size: 20,
+                              ))),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text('ADD TICKET',
+                            style: TextStyle(
+                                color: AppColors.greenPrimary,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 18)),
+                      ),
+                    ],
+                  ),
+                ),
+                backgroundColor: AppColors.whiteText,
+                body: Container(
+                  padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        child: Consumer<LoginProvider>(
+                          builder: (context, loginProvider, child) {
+                            return FutureProvider(
+                                create: (_) {
+                                  return loginProvider.menuApi(
+                                      context: context);
                                 },
-                                dropdownMenuEntries: loginProvider.listProduct!.data.products
-                                    .map<DropdownMenuEntry<String>>(
-                                        (ResponsePDataProducts value) {
-                                  return DropdownMenuEntry<String>(
-                                      value: value.id.toString(), label: value.name);
-                                }).toList(),
-                              )
-                            : const Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.pinkText,
-                                ),
-                              ));
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Serial Number',
-                  ),
-                  controller: _messageCtrl,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Note',
-                  ),
-                  controller: _noteCtrl,
-                ),
-              ),
-              Consumer<LoginProvider>(
-                builder: (context, loginProvider, _) {
-                  return _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.pinkText,
-                          ),
-                        )
-                      : button(
-                          text: 'Create Ticket',
-                          onTap: () {
-                            debugPrint('prinint: login');
-                            _onTapBtn(loginProvider);
+                                lazy: false,
+                                initialData: ResponsePData(),
+                                child: loginProvider.listProduct?.data != null
+                                    ? DropdownMenu<String>(
+                                        leadingIcon: const Icon(
+                                          Icons.production_quantity_limits,
+                                          color: AppColors.greenPrimary,
+                                        ),
+                                        hintText: "Please select",
+                                        width: null,
+                                        initialSelection: loginProvider
+                                            .listProduct
+                                            ?.data
+                                            .products
+                                            .first
+                                            .name,
+                                        onSelected: (String? value) {
+                                          // This is called when the user selects an item.
+                                          setState(() {
+                                            dropdownValue = value!;
+                                          });
+                                        },
+                                        dropdownMenuEntries: loginProvider
+                                            .listProduct!.data.products
+                                            .map<DropdownMenuEntry<String>>(
+                                                (ResponsePDataProducts value) {
+                                          return DropdownMenuEntry<String>(
+                                              value: value.id.toString(),
+                                              label: value.name);
+                                        }).toList(),
+                                      )
+                                    : const Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.pinkText,
+                                        ),
+                                      ));
                           },
-                        );
-                },
-              )
-            ],
-          ),
-        ));
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10),
+                        width: double.infinity,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                              hintText: 'Serial Number',
+                              prefixIcon: Icon(Icons.numbers),
+                              prefixIconColor: AppColors.greenPrimary),
+                          controller: _messageCtrl,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10),
+                        width: double.infinity,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                              hintText: 'Note',
+                              prefixIcon: Icon(Icons.note_alt),
+                              prefixIconColor: AppColors.greenPrimary),
+                          controller: _noteCtrl,
+                        ),
+                      ),
+                      Consumer<LoginProvider>(
+                        builder: (context, loginProvider, _) {
+                          return _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.pinkText,
+                                  ),
+                                )
+                              : buttonRounded(
+                                  text: 'Create Ticket',
+                                  top: 30,
+                                  onTap: () {
+                                    debugPrint('prinint: login');
+                                    _onTapBtn(loginProvider);
+                                  },
+                                );
+                        },
+                      )
+                    ],
+                  ),
+                ))));
   }
 
-
   _onTapBtn(LoginProvider loginProvider) async {
-
     if (dropdownValue == "name") {
       showTopSnackBar(
         Overlay.of(context),
@@ -134,7 +171,7 @@ class _AddTicket extends State<AddTicket> {
         ),
       );
       return;
-    }else if (_messageCtrl.text.isEmpty) {
+    } else if (_messageCtrl.text.isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(

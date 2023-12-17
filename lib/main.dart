@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: SharedPreferences.getInstance(),
         builder: (context, snapshot) => MaterialApp(
-              title: 'Torquoise',
+              title: 'TorQuoise',
               theme: ThemeData(
                 colorScheme:
                     ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),

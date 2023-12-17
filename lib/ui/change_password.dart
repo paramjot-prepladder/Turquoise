@@ -24,6 +24,9 @@ class _ChangePassword extends State<ChangePassword> {
   late TextEditingController _confirmPasswordCtrl;
   final bool _registering = false;
   var _isLoading = false;
+  var _passwordVisible = false;
+  var _passwordVisibleOld = false;
+  var _passwordVisibleConfirm = false;
 
   @override
   void initState() {
@@ -37,115 +40,166 @@ class _ChangePassword extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Change Password',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: AppColors.greenPrimary,
-          ),
-          backgroundColor: AppColors.whiteText,
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
-              child: Column(
+        child: SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: AppColors.whiteText,
+              elevation: 0,
+              toolbarHeight: 80,
+              flexibleSpace: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextField(
-                      autocorrect: false,
-                      autofillHints:
-                          _registering ? null : [AutofillHints.password],
-                      controller: _oldPasswordController,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                        labelText: 'Old Password',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () => _oldPasswordController?.clear(),
-                        ),
-                      ),
-                      focusNode: _focusNode,
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
-                      textCapitalization: TextCapitalization.none,
-                      textInputAction: TextInputAction.done,
-                    ),
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: AppColors.greenPrimary,
+                            size: 20,
+                          ))),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text('CHANGE PASSWORD',
+                        style: TextStyle(
+                            color: AppColors.greenPrimary,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18)),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextField(
-                      autocorrect: false,
-                      autofillHints:
-                          _registering ? null : [AutofillHints.password],
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () => _passwordController?.clear(),
-                        ),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
-                      textCapitalization: TextCapitalization.none,
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: TextField(
-                      autocorrect: false,
-                      autofillHints:
-                          _registering ? null : [AutofillHints.password],
-                      controller: _confirmPasswordCtrl,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                        labelText: 'Confirm Password',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () => _confirmPasswordCtrl.clear(),
-                        ),
-                      ),
-                      // focusNode: _focusNode,
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
-
-                      textCapitalization: TextCapitalization.none,
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ),
-                  Consumer<LoginProvider>(
-                    builder: (context, loginProvider, _) {
-                      return _isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.pinkText,
-                              ),
-                            )
-                          : button(
-                              text: 'Change Password',
-                              onTap: () {
-                                _onTapBtn(loginProvider);
-                              },
-                            );
-                    },
-                  )
                 ],
+              ),
+            ),
+            backgroundColor: AppColors.whiteText,
+            body: Container(
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  alignment: Alignment.bottomRight,
+                  image: AssetImage("assets/images/bulb_green.png"),
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 60, left: 24, right: 24),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: TextField(
+                          autocorrect: false,
+                          autofillHints:
+                              _registering ? null : [AutofillHints.password],
+                          controller: _oldPasswordController,
+                          decoration: InputDecoration(
+                            // border: const OutlineInputBorder(
+                            //   borderRadius: BorderRadius.all(
+                            //     Radius.circular(8),
+                            //   ),
+                            // ),
+                            labelText: 'Old Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisibleOld
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () => setState(() {
+                                _passwordVisibleOld = !_passwordVisibleOld;
+                              }),
+                            ),
+                          ),
+                          focusNode: _focusNode,
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: !_passwordVisibleOld,
+                          textCapitalization: TextCapitalization.none,
+                          textInputAction: TextInputAction.done,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: TextField(
+                          autocorrect: false,
+                          autofillHints:
+                              _registering ? null : [AutofillHints.password],
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            // border: const OutlineInputBorder(
+                            //   borderRadius: BorderRadius.all(
+                            //     Radius.circular(8),
+                            //   ),
+                            // ),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () => setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              }),
+                            ),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: !_passwordVisible,
+                          textCapitalization: TextCapitalization.none,
+                          textInputAction: TextInputAction.done,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: TextField(
+                          autocorrect: false,
+                          autofillHints:
+                              _registering ? null : [AutofillHints.password],
+                          controller: _confirmPasswordCtrl,
+                          decoration: InputDecoration(
+                            // border: const OutlineInputBorder(
+                            //   borderRadius: BorderRadius.all(
+                            //     Radius.circular(8),
+                            //   ),
+                            // ),
+                            labelText: 'Confirm Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisibleConfirm
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () => setState(() {
+                                _passwordVisibleConfirm =
+                                    !_passwordVisibleConfirm;
+                              }),
+                            ),
+                          ),
+                          // focusNode: _focusNode,
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: !_passwordVisibleConfirm,
+
+                          textCapitalization: TextCapitalization.none,
+                          textInputAction: TextInputAction.done,
+                        ),
+                      ),
+                      Consumer<LoginProvider>(
+                        builder: (context, loginProvider, _) {
+                          return _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.pinkText,
+                                  ),
+                                )
+                              : buttonRounded(
+                                  top: 80,
+                                  text: 'Change Password',
+                                  onTap: () {
+                                    _onTapBtn(loginProvider);
+                                  },
+                                );
+                        },
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

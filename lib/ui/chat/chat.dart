@@ -91,98 +91,115 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
     if (_keyboardVisible) {
       _scrollDown();
     }
-    debugPrint(_keyboardVisible.toString());
     return ChangeNotifierProvider(
         create: (context) => LoginProvider(),
-        child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: AppColors.greenPrimary,
-                title: const Text('Messages'),
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.refresh_rounded),
-                    tooltip: "Refresh Chat",
-                    onPressed: () {
-                      setState(() {
-                        shouldCallApi = true;
-                      });
-                    },
-                  ),
-                ]),
-            backgroundColor: AppColors.whiteText,
-            body: Consumer<LoginProvider>(
-              builder: (context, loginProvider, child) {
-                if (shouldCallApi) {
-                  callFuture(loginProvider);
-                }
-                return Column(
-                  children: <Widget>[
-                    Expanded(
-                        child: Container(
-                      margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: loginProvider.message != null
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              controller: _controller,
-                              itemCount: loginProvider.message?.length,
-                              itemBuilder: (context, index) {
-                                return VisibilityDetector(
-                                    key: const Key('main'),
-                                    onVisibilityChanged: (visibilityInfo) {
-                                      visiblePercentage =
-                                          visibilityInfo.visibleFraction * 100;
-                                      debugPrint(
-                                          'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
-                                    },
-                                    child: MessageTile(
-                                      message:
-                                          loginProvider.message![index].message,
-                                      sendByMe: loginProvider
-                                                  .message![index].isAdmin ==
-                                              "1"
-                                          ? false
-                                          : true,
-                                      time: loginProvider.message![index].time,
-                                    ));
-                              },
-                            )
-                          : const Center(
-                              child: CircularProgressIndicator(
+        child: SafeArea(
+            child: Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: AppColors.whiteText,
+                  elevation: 0,
+                  toolbarHeight: 80,
+                  flexibleSpace: Column(
+                    children: [
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new,
                                 color: AppColors.greenPrimary,
-                              ),
-                            ),
-                    )),
-                    Row(
-                      children: [
+                                size: 20,
+                              ))),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text('MESSAGES',
+                            style: TextStyle(
+                                color: AppColors.greenPrimary,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 18)),
+                      ),
+                    ],
+                  ),
+                ),
+                backgroundColor: AppColors.whiteText,
+                body: Consumer<LoginProvider>(
+                  builder: (context, loginProvider, child) {
+                    if (shouldCallApi) {
+                      callFuture(loginProvider);
+                    }
+                    return Column(
+                      children: <Widget>[
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextField(
-                              keyboardType: TextInputType.name,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: const InputDecoration(
-                                hintText: 'Message to send',
+                            child: Container(
+                          margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: loginProvider.message != null
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  controller: _controller,
+                                  itemCount: loginProvider.message?.length,
+                                  itemBuilder: (context, index) {
+                                    return VisibilityDetector(
+                                        key: const Key('main'),
+                                        onVisibilityChanged: (visibilityInfo) {
+                                          visiblePercentage =
+                                              visibilityInfo.visibleFraction *
+                                                  100;
+                                          debugPrint(
+                                              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+                                        },
+                                        child: MessageTile(
+                                          message: loginProvider
+                                              .message![index].message,
+                                          sendByMe: loginProvider
+                                                      .message![index]
+                                                      .isAdmin ==
+                                                  "1"
+                                              ? false
+                                              : true,
+                                          time: loginProvider
+                                              .message![index].time,
+                                        ));
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.greenPrimary,
+                                  ),
+                                ),
+                        )),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: TextField(
+                                  keyboardType: TextInputType.name,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Message to send',
+                                  ),
+                                  controller: _messageCtrl,
+                                ),
                               ),
-                              controller: _messageCtrl,
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: button(
+                                text: "Send",
+                                onTap: () {
+                                  _sendChat(loginProvider);
+                                },
+                              ),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: button(
-                            text: "Send",
-                            onTap: () {
-                              _sendChat(loginProvider);
-                            },
-                          ),
-                        )
                       ],
-                    ),
-                  ],
-                );
-              },
-            )));
+                    );
+                  },
+                ))));
   }
 
   void callFuture(LoginProvider loginProvider) async {
@@ -285,7 +302,7 @@ class MessageTile extends StatelessWidget {
                           bottomRight: Radius.circular(23)),
                   gradient: LinearGradient(
                     colors: sendByMe
-                        ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
+                        ? [const Color(0xff13ac99), const Color(0xff13ac99)]
                         : [const Color(0xff22534f), const Color(0xff22534F)],
                   )),
               child: Text(message,

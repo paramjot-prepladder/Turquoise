@@ -20,7 +20,75 @@ class _Settings extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SettingsList(
+      body: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              decoration: BoxDecoration(
+                  color: AppColors.greyLite,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.greyLite)),
+              child: ListTile(
+                leading: const Icon(Icons.person, color: AppColors.liteBlack),
+                trailing: const Icon(Icons.arrow_right_rounded),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ChangePassword()),
+                  );
+                },
+                title: const Text(
+                  "Change Password",
+                  style: TextStyle(color: AppColors.textBlack, fontSize: 18),
+                ),
+              )),
+          Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              decoration: BoxDecoration(
+                  color: AppColors.greyLite,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.greyLite)),
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: AppColors.liteBlack),
+                trailing: const Icon(Icons.arrow_right_rounded),
+                onTap: () {
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Logout'),
+                              content: const Text('Would you like to log out?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel',
+                                      style: TextStyle(
+                                          color: AppColors.greenPrimary)),
+                                ),
+                                TextButton(
+                                    onPressed: () => logout(),
+                                    child: const Text(
+                                      'OK',
+                                      style: TextStyle(
+                                          color: AppColors.greenPrimary),
+                                    ))
+                              ]));
+                },
+                title: const Text(
+                  "Logout",
+                  style: TextStyle(color: Colors.red, fontSize: 18),
+                ),
+              ))
+        ],
+      ),
+      /* SettingsList(
         sections: [
           SettingsSection(
             // titlePadding: EdgeInsets.all(20),
@@ -67,7 +135,7 @@ class _Settings extends State<Settings> {
             ],
           ),
         ],
-      ),
+      ),*/
     );
   }
 
