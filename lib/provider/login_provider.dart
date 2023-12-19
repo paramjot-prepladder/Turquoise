@@ -27,11 +27,17 @@ class LoginProvider extends ChangeNotifier {
   }
 
   ResponseAllTicketsEntity? allTicketsEntity;
+  ResponsePEntity? forgotResponse;
   List<ResponseAllTicketsDataTicket>? ticket;
 
   getTickets({required BuildContext context}) async {
     allTicketsEntity = await ApiService().getTicket();
     ticket = allTicketsEntity?.data.ticket;
+    notifyListeners();
+  }
+
+  forgotPassword(String forgotPassword, {required BuildContext context}) async {
+    forgotResponse = await ApiService().forgotPassword(forgotPassword);
     notifyListeners();
   }
 
@@ -54,13 +60,19 @@ class LoginProvider extends ChangeNotifier {
   Future<ResponsePEntity?> productApi({required BuildContext context}) async {
     return ApiService().productList();
   }
-  Future<ResponseMessageEntity?> createTicket(Map<String, String> body,{required BuildContext context}) async {
+
+  Future<ResponseMessageEntity?> createTicket(Map<String, String> body,
+      {required BuildContext context}) async {
     return ApiService().createTicket(body);
   }
-  Future<ResponseLoginEntity?> registerUser(Map<String, String> body,{required BuildContext context}) async {
+
+  Future<ResponseLoginEntity?> registerUser(Map<String, String> body,
+      {required BuildContext context}) async {
     return ApiService().registerUser(body);
   }
-  Future<ResponseMessageEntity?> changePassword(Map<String, String> body,{required BuildContext context}) async {
+
+  Future<ResponseMessageEntity?> changePassword(Map<String, String> body,
+      {required BuildContext context}) async {
     return ApiService().changePassword(body);
   }
 }

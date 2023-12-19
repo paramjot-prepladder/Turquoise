@@ -166,6 +166,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                                     .w900)),
                                                   )
                                                 : Text(""),
+                                            const Icon(Icons.arrow_right)
                                             // Container(
                                             //   color: AppColors.greenPrimary,
                                             //   alignment: Alignment.center,

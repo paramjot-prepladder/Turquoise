@@ -90,7 +90,7 @@ class _Register extends State<Register> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 5),
-                  child: Text('TorQuoise',
+                  child: Text('TurQuoise',
                       style: TextStyle(
                           color: AppColors.greenPrimary,
                           fontWeight: FontWeight.w700,

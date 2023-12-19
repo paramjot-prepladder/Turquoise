@@ -4,15 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/ui/home_tab/tab.dart';
 import 'package:testing/ui/register/register.dart';
+import 'package:testing/utils/common/common_widgets.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../provider/login_provider.dart';
 import '../../utils/color/app_colors.dart';
-import '../../utils/common/common_widgets.dart';
-import '../../utils/common/text_field.dart';
-import '../home/home.dart';
-import '../menu/menu.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -28,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _lastName;
   bool _registering = false;
   late TextEditingController _emailCtrl;
+  late TextEditingController _frgCtrl;
   late TextEditingController _pwdCtrl;
   var _isLoading = false;
   var _passwordVisible = false;
@@ -37,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _focusNode = FocusNode();
     _emailCtrl = TextEditingController();
+    _frgCtrl = TextEditingController();
     _pwdCtrl = TextEditingController();
   }
 
@@ -46,6 +45,19 @@ class _LoginScreenState extends State<LoginScreen> {
       context,
       MaterialPageRoute(builder: (context) => const Register()),
     );
+  }
+
+  void _forgotPassword(LoginProvider loginProvider) async {
+    var result =
+        await loginProvider.forgotPassword(_frgCtrl.text, context: context);
+    if (result?.status == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(
+          message: result?.message ?? '',
+        ),
+      );
+    }
   }
 
   void _register1() async {}
@@ -145,13 +157,58 @@ class _LoginScreenState extends State<LoginScreen> {
                         textInputAction: TextInputAction.done,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _register,
-                        child: const Text('Forgot Password?'),
-                      ),
-                    ),
+                    Consumer<LoginProvider>(
+                        builder: (context, loginProvider, _) {
+                      return Container(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('Forgot Password?'),
+                                      content: TextField(
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
+                                        controller: _frgCtrl,
+                                        decoration: const InputDecoration(
+                                            hintText: "Kindly enter email"),
+                                      ),
+                                      actions: <Widget>[
+                                        buttonRounded(
+                                          text: "Send",
+                                          onTap: () {
+                                            if (_frgCtrl.text.isEmpty) {
+                                              showTopSnackBar(
+                                                Overlay.of(context),
+                                                const CustomSnackBar.error(
+                                                  message:
+                                                      "Kindly enter email.",
+                                                ),
+                                              );
+                                              return;
+                                            } else if (!isEmail(
+                                                _frgCtrl.text)) {
+                                              showTopSnackBar(
+                                                Overlay.of(context),
+                                                const CustomSnackBar.error(
+                                                  message:
+                                                      "Kindly enter valid email.",
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            _forgotPassword(loginProvider);
+                                          },
+                                        ),
+                                      ],
+                                    ));
+                          },
+                          child: const Text('Forgot Password?'),
+                        ),
+                      );
+                    }),
                     Consumer<LoginProvider>(
                       builder: (context, loginProvider, _) {
                         return _isLoading

@@ -60,6 +60,29 @@ class ApiService {
     }
   }
 
+  Future<ResponsePEntity?> forgotPassword(String email) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      Map<String, String> body = Map();
+      body['email'] = email;
+      http.Response data = await http.post(
+          Uri.parse("${baseUrl}api/forgot-password"),
+          body: body,
+          headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        debugPrint('movieTitle: ${data.body}');
+
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
   Future<ResponseAllTicketsEntity?> getTicket() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
