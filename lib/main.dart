@@ -4,6 +4,7 @@ import 'package:testing/ui/chat/chat.dart';
 import 'package:testing/ui/home_tab/tab.dart';
 import 'package:testing/ui/login/login.dart';
 import 'package:testing/ui/menu/menu.dart';
+import 'package:testing/ui/products/products.dart';
 import 'package:testing/ui/register/register.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
@@ -28,9 +29,9 @@ class MyApp extends StatelessWidget {
               ),
               debugShowCheckedModeBanner: false,
               home: snapshot.data?.getString('token') == null
-                  ? const LoginScreen()
+                  ? const ProductListing()
                   : snapshot.data!.getString('token')!.toString().isEmpty
-                      ? const LoginScreen()
+                      ? const ProductListing()
                       : const TabHome(),
             ));
   }

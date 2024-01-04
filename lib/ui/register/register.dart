@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/ui/login/login.dart';
 import 'package:testing/utils/color/app_colors.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -248,7 +249,13 @@ class _Register extends State<Register> {
                                 },
                               );
                       },
-                    )
+                    ),
+                    TextButton(onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    }, child: const Text("Login"))
                   ],
                 ),
               ),
