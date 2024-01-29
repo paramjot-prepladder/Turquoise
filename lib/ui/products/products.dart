@@ -21,31 +21,12 @@ class _ProductListing extends State<ProductListing> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: AppColors.whiteText,
-              elevation: 0,
-              toolbarHeight: 90,
-              flexibleSpace: const Column(
-                children: [
-                  /*  Container(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new,
-                          color: AppColors.greenPrimary,
-                          size: 20,
-                        ))),*/
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Text('PRODUCTS',
-                        style: TextStyle(
-                            color: AppColors.greenPrimary,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18)),
-                  ),
-                ],
+              title: const Text(
+                'TurQuoise',
+                style: TextStyle(color: Colors.white),
               ),
+              backgroundColor: AppColors.greenPrimary,
+              automaticallyImplyLeading: false,
             ),
             backgroundColor: AppColors.whiteText,
             body: SingleChildScrollView(
@@ -53,6 +34,17 @@ class _ProductListing extends State<ProductListing> {
                 // mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    alignment: AlignmentDirectional.center,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 20,bottom: 20),
+                      child: Text('PRODUCTS',
+                          style: TextStyle(
+                              color: AppColors.greenPrimary,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 18)),
+                    ),
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -174,26 +166,23 @@ class ProductPreview extends StatelessWidget {
                   style: const TextStyle(
                       color: AppColors.liteBlack, fontSize: 14)),
             ),
-            Row(
+            Column(
               children: <Widget>[
-                Expanded(
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          _launchURL(Uri.parse(externalUrl));
-                        },
-                        child:
-                            const Text("Buy", style: TextStyle(fontSize: 10)))),
-                Expanded(
-                    child: TextButton(
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Register()),
-                          );
-                        },
-                        child: const Text("Support",
-                            style: TextStyle(fontSize: 10))))
+                ElevatedButton(
+                    onPressed: () async {
+                      _launchURL(Uri.parse(externalUrl));
+                    },
+                    child: const Text("Buy", style: TextStyle(fontSize: 12))),
+                TextButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register()),
+                      );
+                    },
+                    child:
+                        const Text("Support", style: TextStyle(fontSize: 12)))
               ],
             )
           ],

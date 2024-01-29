@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -230,7 +231,10 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
       context,
       MaterialPageRoute(builder: (context) => const AddTicket()),
     );
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    var a = await messaging.getToken();
 
+    debugPrint(a);
     if (shouldRefresh ?? false) {
       setState(() {
         shouldCallApi = true;
