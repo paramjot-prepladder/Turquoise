@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ class _Register extends State<Register> {
   TextEditingController? _passwordController;
   bool _registering = false;
   TextEditingController? _usernameController;
+  TextEditingController? _phoneController;
   TextEditingController? _nameController;
   var _isLoading = false;
   late TextEditingController _confirmPasswordCtrl;
@@ -47,6 +49,7 @@ class _Register extends State<Register> {
       text: _email,
     );
     _nameController = TextEditingController(text: '');
+    _phoneController = TextEditingController(text: '');
     _confirmPasswordCtrl = TextEditingController(text: '');
   }
 
@@ -164,6 +167,39 @@ class _Register extends State<Register> {
                         textInputAction: TextInputAction.next,
                       ),
                     ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            child: CountryCodePicker(
+                              onInit:(value) => {
+                                debugPrint(""+value!.code!)
+                              } ,
+                            ),
+                        ),
+                        Expanded(
+                            child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: TextField(
+                            autocorrect: false,
+                            controller: _phoneController,
+                            decoration: const InputDecoration(
+                                // border: const OutlineInputBorder(
+                                //   borderRadius: BorderRadius.all(
+                                //     Radius.circular(8),
+                                //   ),
+                                // ),
+                                hintText: 'Phone Number',
+                                prefixIcon: Icon(Icons.phone),
+                                prefixIconColor: AppColors.greenPrimary),
+                            keyboardType: TextInputType.phone,
+                            textCapitalization: TextCapitalization.none,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ))
+                      ],
+                    ),
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: TextField(
@@ -250,12 +286,15 @@ class _Register extends State<Register> {
                               );
                       },
                     ),
-                    TextButton(onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    }, child: const Text("Login"))
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                          );
+                        },
+                        child: const Text("Login"))
                   ],
                 ),
               ),
