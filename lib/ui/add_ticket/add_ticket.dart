@@ -41,7 +41,7 @@ class _AddTicket extends State<AddTicket> {
                   automaticallyImplyLeading: false,
                   backgroundColor: AppColors.whiteText,
                   elevation: 0,
-                  toolbarHeight: 80,
+                  toolbarHeight: 90,
                   flexibleSpace: Column(
                     children: [
                       Container(
@@ -70,6 +70,7 @@ class _AddTicket extends State<AddTicket> {
                   child: Column(
                     children: [
                       Container(
+                        alignment: Alignment.center,
                         width: double.infinity,
                         child: Consumer<LoginProvider>(
                           builder: (context, loginProvider, child) {
@@ -82,12 +83,13 @@ class _AddTicket extends State<AddTicket> {
                                 initialData: ResponsePData(),
                                 child: loginProvider.listProduct?.data != null
                                     ? DropdownMenu<String>(
+                                        menuHeight: 400,
                                         leadingIcon: const Icon(
                                           Icons.production_quantity_limits,
                                           color: AppColors.greenPrimary,
                                         ),
                                         hintText: "Please select",
-                                        width: null,
+                                        width: 300,
                                         initialSelection: loginProvider
                                             .listProduct
                                             ?.data
@@ -106,7 +108,11 @@ class _AddTicket extends State<AddTicket> {
                                                 (ResponsePDataProducts value) {
                                           return DropdownMenuEntry<String>(
                                               value: value.id.toString(),
-                                              label: value.name);
+                                              label: value.name,
+                                              style: const ButtonStyle(
+                                                  maximumSize: MaterialStatePropertyAll(Size(300,300)),
+                                                  textStyle: MaterialStatePropertyAll(TextStyle(overflow: TextOverflow.ellipsis))
+                                              ));
                                         }).toList(),
                                       )
                                     : const Center(
@@ -119,7 +125,7 @@ class _AddTicket extends State<AddTicket> {
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 10),
-                        width: double.infinity,
+                        width: 300,
                         child: TextField(
                           decoration: const InputDecoration(
                               hintText: 'Serial Number',
@@ -130,7 +136,7 @@ class _AddTicket extends State<AddTicket> {
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 10),
-                        width: double.infinity,
+                        width: 300,
                         child: TextField(
                           decoration: const InputDecoration(
                               hintText: 'Note',

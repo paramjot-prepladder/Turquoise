@@ -64,6 +64,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
             backgroundColor: AppColors.whiteText,
             body: Consumer<LoginProvider>(
               builder: (context, loginProvider, child) {
+                _registerDeviceId(loginProvider);
                 if (shouldCallApi) {
                   callFuture(loginProvider);
                 }
@@ -205,7 +206,10 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
               onPressed: _incrementCounter,
               backgroundColor: AppColors.greenPrimary,
               tooltip: 'Add Ticket',
-              label: const Text("Raise Ticket"),
+              label: const Text(
+                "Raise Ticket",
+                style: TextStyle(color: Colors.white),
+              ),
             )));
   }
 
@@ -224,6 +228,14 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
     setState(() {
       shouldCallApi = true;
     });
+  }
+
+  Future<void> _registerDeviceId(LoginProvider loginProvider) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    var a = await messaging.getToken();
+    Map<String, String> body = Map();
+    body['device_id'] = a!;
+    var result = await loginProvider.registerDeviceId(body, context: context);
   }
 
   Future<void> _incrementCounter() async {

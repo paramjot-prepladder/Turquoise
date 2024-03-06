@@ -1,8 +1,12 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:testing/ui/register/register.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../provider/login_provider.dart';
 import '../../utils/color/app_colors.dart';
 import '../change_password.dart';
 
@@ -18,113 +22,155 @@ class ProductListing extends StatefulWidget {
 class _ProductListing extends State<ProductListing> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'TurQuoise',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: AppColors.greenPrimary,
-              automaticallyImplyLeading: false,
-            ),
-            backgroundColor: AppColors.whiteText,
-            body: SingleChildScrollView(
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: AlignmentDirectional.center,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 20,bottom: 20),
-                      child: Text('PRODUCTS',
-                          style: TextStyle(
-                              color: AppColors.greenPrimary,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18)),
-                    ),
+    return ChangeNotifierProvider(
+        create: (context) => LoginProvider(),
+        child: SafeArea(
+            child: Scaffold(
+                appBar: AppBar(
+                  title: const Text(
+                    'TurQuoise',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Container(
+                  backgroundColor: AppColors.greenPrimary,
+                  automaticallyImplyLeading: false,
+                ),
+                backgroundColor: AppColors.whiteText,
+                body: Consumer<LoginProvider>(
+                  builder: (context, loginProvider, child) {
+                    _registerDeviceId(loginProvider);
+                    return SingleChildScrollView(
+                        child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: AlignmentDirectional.center,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            child: Text('PRODUCTS',
+                                style: TextStyle(
+                                    color: AppColors.greenPrimary,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18)),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 5),
+                                    // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.greyLite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: AppColors.greyLite)),
+                                    child: const ProductPreview(
+                                        title: "Oxygen Concentrator",
+                                        image:
+                                            "assets/images/oxygen_concentrator.png",
+                                        externalUrl:
+                                            "http://turquoise.cc/product-category/home-care/oxygen-therapy/",
+                                        price: "price"))),
+                            Expanded(
+                                child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 5),
+                                    // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.greyLite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: AppColors.greyLite)),
+                                    child: const ProductPreview(
+                                        title: "Masks",
+                                        image: "assets/images/mask.png",
+                                        externalUrl:
+                                            "http://turquoise.cc/product-category/home-care/patient-interface/full-face-masks/",
+                                        price: "price"))),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 5),
+                                    // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.greyLite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: AppColors.greyLite)),
+                                    child: const ProductPreview(
+                                        title: "BiPAP",
+                                        image: "assets/images/bipap.png",
+                                        externalUrl:
+                                            "http://turquoise.cc/product-category/home-care/sleep-apnea-therapy/",
+                                        price: "price"))),
+                            Expanded(
+                                child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 5),
+                                    // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.greyLite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: AppColors.greyLite)),
+                                    child: const ProductPreview(
+                                        title: "CPAP",
+                                        image: "assets/images/cpap.png",
+                                        externalUrl:
+                                            "http://turquoise.cc/product-category/home-care/sleep-apnea-therapy/cpap-and-apap-devices/",
+                                        price: "price"))),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 5),
+                                    // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.greyLite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: AppColors.greyLite)),
+                                    child: const ProductPreview(
+                                        title: "Hearing Aids",
+                                        image: "assets/images/hearing.png",
+                                        externalUrl:
+                                            "https://turquoise.cc/product-category/home-care/hearing-aids/",
+                                        price: "price"))),
+                            Expanded(
+                                child: Container(
                               width: double.infinity,
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 5),
                               // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                              decoration: BoxDecoration(
-                                  color: AppColors.greyLite,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border:
-                                      Border.all(color: AppColors.greyLite)),
-                              child: const ProductPreview(
-                                  title: "Oxygen Concentrator",
-                                  image:
-                                      "assets/images/oxygen_concentrator.png",
-                                  externalUrl:
-                                      "http://turquoise.cc/product-category/home-care/oxygen-therapy/",
-                                  price: "price"))),
-                      Expanded(
-                          child: Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 5),
-                              // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                              decoration: BoxDecoration(
-                                  color: AppColors.greyLite,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border:
-                                      Border.all(color: AppColors.greyLite)),
-                              child: const ProductPreview(
-                                  title: "Masks",
-                                  image: "assets/images/mask.png",
-                                  externalUrl:
-                                      "http://turquoise.cc/product-category/home-care/patient-interface/full-face-masks/",
-                                  price: "price"))),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 5),
-                              // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                              decoration: BoxDecoration(
-                                  color: AppColors.greyLite,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border:
-                                      Border.all(color: AppColors.greyLite)),
-                              child: const ProductPreview(
-                                  title: "BiPAP",
-                                  image: "assets/images/bipap.png",
-                                  externalUrl:
-                                      "http://turquoise.cc/product-category/home-care/sleep-apnea-therapy/",
-                                  price: "price"))),
-                      Expanded(
-                          child: Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 5),
-                              // padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                              decoration: BoxDecoration(
-                                  color: AppColors.greyLite,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border:
-                                      Border.all(color: AppColors.greyLite)),
-                              child: const ProductPreview(
-                                  title: "CPAP",
-                                  image: "assets/images/cpap.png",
-                                  externalUrl:
-                                      "http://turquoise.cc/product-category/home-care/sleep-apnea-therapy/cpap-and-apap-devices/",
-                                  price: "price"))),
-                    ],
-                  )
-                ],
-              ),
-            )));
+                            )),
+                          ],
+                        )
+                      ],
+                    ));
+                  },
+                ))));
+  }
+
+  Future<void> _registerDeviceId(LoginProvider loginProvider) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    var a = await messaging.getToken();
+    Map<String, String> body = Map();
+    body['device_id'] = a!;
+    var result = await loginProvider.registerDeviceId(body, context: context);
   }
 }
 

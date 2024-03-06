@@ -21,7 +21,7 @@ class ApiService {
 
   String menuUrl = "https://jsonplaceholder.typicode.com/posts";
   String loginUrl = "https://reqres.in/api/login";
-  String baseUrl = "https://thedigitalgeography.com/demos/application/";
+  String baseUrl = "https://turquoise.cc/support/api/";
 
   Future<List<DemoResponse>?> fundCharitiesList() async {
     try {
@@ -45,7 +45,7 @@ class ApiService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
-      http.Response data = await http.get(Uri.parse("${baseUrl}api/products"),
+      http.Response data = await http.get(Uri.parse("${baseUrl}products"),
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
@@ -67,7 +67,7 @@ class ApiService {
       Map<String, String> body = Map();
       body['email'] = email;
       http.Response data = await http.post(
-          Uri.parse("${baseUrl}api/forgot-password"),
+          Uri.parse("${baseUrl}forgot-password"),
           body: body,
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
@@ -87,7 +87,7 @@ class ApiService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
-      http.Response data = await http.get(Uri.parse("${baseUrl}api/ticket"),
+      http.Response data = await http.get(Uri.parse("${baseUrl}ticket"),
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
@@ -105,7 +105,7 @@ class ApiService {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.get(
-          Uri.parse("${baseUrl}api/message?ticket_id=$ticketId"),
+          Uri.parse("${baseUrl}message?ticket_id=$ticketId"),
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
@@ -122,7 +122,7 @@ class ApiService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
-      http.Response data = await http.post(Uri.parse("${baseUrl}api/ticket"),
+      http.Response data = await http.post(Uri.parse("${baseUrl}ticket"),
           body: body, headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
@@ -141,7 +141,7 @@ class ApiService {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.post(
-          Uri.parse("${baseUrl}api/change-password"),
+          Uri.parse("${baseUrl}change-password"),
           body: body,
           headers: {"Authorization": token.toString()});
       debugPrint(data.body);
@@ -158,7 +158,25 @@ class ApiService {
   Future<ResponseLoginEntity?> registerUser(Map<String, String> body) async {
     try {
       http.Response data =
-          await http.post(Uri.parse("${baseUrl}api/register"), body: body);
+          await http.post(Uri.parse("${baseUrl}register"), body: body);
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<ResponseLoginEntity?> registerDeviceId(
+      Map<String, String> body) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.post(Uri.parse("${baseUrl}device-id"),
+          body: body, headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
@@ -178,7 +196,7 @@ class ApiService {
       Map<String, String> body = Map();
       body['ticket_id'] = ticketId;
       body['message'] = message;
-      http.Response data = await http.post(Uri.parse("${baseUrl}api/message"),
+      http.Response data = await http.post(Uri.parse("${baseUrl}message"),
           body: body, headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
@@ -198,7 +216,7 @@ class ApiService {
       body['email'] = email;
       body['password'] = pwd;
       http.Response data =
-          await http.post(Uri.parse("${baseUrl}api/login"), body: body);
+          await http.post(Uri.parse("${baseUrl}login"), body: body);
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));
       } else {

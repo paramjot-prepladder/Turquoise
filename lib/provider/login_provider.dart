@@ -71,6 +71,11 @@ class LoginProvider extends ChangeNotifier {
     return ApiService().registerUser(body);
   }
 
+  Future<ResponseLoginEntity?> registerDeviceId(Map<String, String> body,
+      {required BuildContext context}) async {
+    return ApiService().registerDeviceId(body);
+  }
+
   Future<ResponseMessageEntity?> changePassword(Map<String, String> body,
       {required BuildContext context}) async {
     return ApiService().changePassword(body);

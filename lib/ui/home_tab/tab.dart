@@ -28,6 +28,8 @@ class _TabHome extends State<TabHome> {
           appBar: AppBar(
             backgroundColor: AppColors.greenPrimary,
             bottom: const TabBar(
+              indicatorColor: Colors.white,
+              labelColor: Colors.white,
               tabs: [
                 Tab(icon: Icon(Icons.home)),
                 Tab(icon: Icon(Icons.settings)),

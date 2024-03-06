@@ -22,6 +22,7 @@ class Register extends StatefulWidget {
 
 class _Register extends State<Register> {
   String? _email;
+  String? _countryCode;
   String? _firstName;
   FocusNode? _focusNode;
   String? _lastName;
@@ -67,7 +68,7 @@ class _Register extends State<Register> {
         create: (context) => LoginProvider(),
         child: SafeArea(
             child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: AppColors.whiteText,
@@ -106,13 +107,13 @@ class _Register extends State<Register> {
           backgroundColor: AppColors.whiteText,
           body: Container(
             height: double.infinity,
-            decoration: const BoxDecoration(
+           /* decoration: const BoxDecoration(
               image: DecorationImage(
                 alignment: Alignment.bottomRight,
                 fit: BoxFit.scaleDown,
                 image: AssetImage("assets/images/bulb_blue.png"),
               ),
-            ),
+            ),*/
             child: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
@@ -171,12 +172,14 @@ class _Register extends State<Register> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            child: CountryCodePicker(
-                              onInit:(value) => {
-                                debugPrint(""+value!.code!)
-                              } ,
-                            ),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: CountryCodePicker(
+                            initialSelection: "BH",
+                            onInit: (value) => {
+                              _countryCode = value?.dialCode
+                              // debugPrint("" + value!.code!)
+                            },
+                          ),
                         ),
                         Expanded(
                             child: Container(
@@ -320,6 +323,22 @@ class _Register extends State<Register> {
         ),
       );
       return;
+    } else if (_countryCode?.isEmpty == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly select Country Code.",
+        ),
+      );
+      return;
+    } else if (_phoneController?.text.isEmpty == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Phone number.",
+        ),
+      );
+      return;
     } else if (!isEmail(_usernameController?.text ?? '')) {
       showTopSnackBar(
         Overlay.of(context),
@@ -350,6 +369,8 @@ class _Register extends State<Register> {
       setState(() => _isLoading = true);
       Map<String, String> body = Map();
       body['name'] = _nameController?.text ?? '';
+      body['mobile'] = _phoneController?.text ?? '';
+      body['mobile_prefix'] = _countryCode ?? '';
       body['email'] = _usernameController?.text ?? '';
       body['password'] = _passwordController?.text ?? '';
       body['confirm_password'] = _confirmPasswordCtrl.text;
