@@ -1,4 +1,4 @@
-package com.example.testing
+package com.turquoise.support
 
 import io.flutter.embedding.android.FlutterActivity
 

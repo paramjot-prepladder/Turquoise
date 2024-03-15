@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:284194916710:android:d576ab11440b417746a0a7",
+        "mobilesdk_app_id": "1:284194916710:android:d1b9746a40536b8246a0a7",
         "android_client_info": {
-          "package_name": "com.example.testing"
+          "package_name": "com.turquoise.support"
         }
       },
       "oauth_client": [],
