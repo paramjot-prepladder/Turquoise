@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   MenuProvider? provider;
   bool shouldCallApi = true;
+  Timer? timer;
 
   @override
   void initState() {
@@ -202,22 +205,46 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                       );
               },
             ),
-            floatingActionButton: FloatingActionButton.extended(
-              onPressed: _incrementCounter,
-              backgroundColor: AppColors.greenPrimary,
-              tooltip: 'Add Ticket',
-              label: const Text(
-                "Raise Ticket",
-                style: TextStyle(color: Colors.white),
-              ),
-            )));
+            floatingActionButton: getFloatingButton()));
+  }
+
+  Widget getFloatingButton() {
+    return Consumer<LoginProvider>(builder: (context, loginProvider, _) {
+      return FutureProvider(
+          create: (_) {
+            return loginProvider.menuApi(context: context);
+          },
+          lazy: false,
+          initialData: ResponsePData(),
+          child: loginProvider.listProduct?.data != null
+              ? FloatingActionButton.extended(
+                  onPressed: _incrementCounter,
+                  backgroundColor: AppColors.greenPrimary,
+                  tooltip: 'Add Ticket',
+                  label: const Text(
+                    "Raise Ticket",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              : Container());
+    });
+  }
+
+  void refreshChat() {
+    timer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        shouldCallApi = true;
+      });
+    });
   }
 
   void callFuture(LoginProvider loginProvider) async {
+    timer?.cancel();
     await loginProvider.getTickets(context: context);
     setState(() {
       shouldCallApi = false;
     });
+    refreshChat();
   }
 
   void _openChat(String? ticket) async {
