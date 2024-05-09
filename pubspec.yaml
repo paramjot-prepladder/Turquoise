@@ -84,6 +84,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/bulb_green.png
+    - assets/images/turquoise_bg.png
     - assets/images/bulb_blue.png
     - assets/icon/launcher_icon.png
     - assets/images/oxygen_concentrator.png

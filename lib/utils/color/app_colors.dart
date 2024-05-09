@@ -15,4 +15,8 @@ class AppColors {
   static const iconGrey = Color(0xffADADAD);
   static const greyLite = Color(0xffF7F7F7);
   static const greenPrimary = Color(0xff31726a);
+  static const skyGreen = Color(0xff1BACB1);
+  static const skyBlack = Color(0xff000507);
+  static const skyGreenGreen = Color(0xff00B3B7);
+  static const skyGreenDark = Color(0xff0C8888);
 }

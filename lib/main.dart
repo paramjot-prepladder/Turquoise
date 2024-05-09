@@ -10,6 +10,7 @@ import 'package:testing/ui/login/login.dart';
 import 'package:testing/ui/menu/menu.dart';
 import 'package:testing/ui/products/products.dart';
 import 'package:testing/ui/register/register.dart';
+import 'package:testing/ui/selection/selection.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
 import 'firebase_options.dart';
@@ -136,7 +137,7 @@ class MyApp extends StatelessWidget {
               ),
               debugShowCheckedModeBanner: false,
               home: snapshot.data?.getString('token') == null
-                  ? const ProductListing()
+                  ? const Selection()
                   : snapshot.data!.getString('token')!.toString().isEmpty
                       ? const ProductListing()
                       : const TabHome(),

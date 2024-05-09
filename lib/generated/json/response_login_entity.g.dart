@@ -51,7 +51,7 @@ ResponseLoginData $ResponseLoginDataFromJson(Map<String, dynamic> json) {
   if (token != null) {
     responseLoginData.token = token;
   }
-  final String? tokenType = jsonConvert.convert<String>(json['token_type']);
+  final String? tokenType = jsonConvert.convert<String>(json['tokenType']);
   if (tokenType != null) {
     responseLoginData.tokenType = tokenType;
   }
@@ -62,7 +62,7 @@ Map<String, dynamic> $ResponseLoginDataToJson(ResponseLoginData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['user'] = entity.user.toJson();
   data['token'] = entity.token;
-  data['token_type'] = entity.tokenType;
+  data['tokenType'] = entity.tokenType;
   return data;
 }
 

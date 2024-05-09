@@ -5,6 +5,7 @@ import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/model/login/response_login_entity.dart';
 import 'package:testing/model/tickets/response_all_tickets_entity.dart';
 
+import '../model/category/response_category_entity.dart';
 import '../model/product/response_p_entity.dart';
 import '../ui/home/home.dart';
 import '../utils/services/api_provider.dart';
@@ -20,9 +21,14 @@ class LoginProvider extends ChangeNotifier {
   }
 
   ResponsePEntity? listProduct;
+  ResponseCategoryEntity? listCategory;
 
   menuApi({required BuildContext context}) async {
     listProduct = await ApiService().productList();
+    notifyListeners();
+  }
+  categoryRequest({required BuildContext context}) async {
+    listCategory = await ApiService().categoryList();
     notifyListeners();
   }
 

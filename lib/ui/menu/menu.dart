@@ -216,7 +216,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
           },
           lazy: false,
           initialData: ResponsePData(),
-          child: loginProvider.listProduct?.data != null
+          child: loginProvider.listProduct?.data.products.length != 0
               ? FloatingActionButton.extended(
                   onPressed: _incrementCounter,
                   backgroundColor: AppColors.greenPrimary,
@@ -231,7 +231,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   }
 
   void refreshChat() {
-    timer = Timer(const Duration(seconds: 5), () {
+    timer = Timer(const Duration(seconds: 50), () {
       setState(() {
         shouldCallApi = true;
       });

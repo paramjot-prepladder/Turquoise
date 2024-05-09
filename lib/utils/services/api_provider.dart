@@ -5,6 +5,7 @@ import 'package:testing/model/chat/response_message_entity.dart';
 import 'package:testing/model/tickets/response_all_tickets_entity.dart';
 import '../../generated/json/base/json_convert_content.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../model/category/response_category_entity.dart';
 import '../../model/login/response_login_entity.dart';
 import '../../model/product/response_p_entity.dart';
 import '../../model/product/response_prod.dart';
@@ -47,6 +48,26 @@ class ApiService {
       var token = prefs.getString('token');
       http.Response data = await http.get(Uri.parse("${baseUrl}products"),
           headers: {"Authorization": token.toString()});
+      debugPrint("Authorization"+ token.toString());
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        debugPrint('movieTitle: ${data.body}');
+
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+  Future<ResponseCategoryEntity?> categoryList() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.get(Uri.parse("${baseUrl}categories"),
+          headers: {"Authorization": token.toString()});
+      debugPrint("Authorization"+ token.toString());
       debugPrint(data.body);
       if (data.statusCode == 200) {
         debugPrint('movieTitle: ${data.body}');

@@ -115,7 +115,8 @@ ResponseAllTicketsDataTicket $ResponseAllTicketsDataTicketFromJson(
   if (time != null) {
     responseAllTicketsDataTicket.time = time;
   }
-  final String? unreadMessages = jsonConvert.convert<String>(json['unread_messages']);
+  final String? unreadMessages = jsonConvert.convert<String>(
+      json['unread_messages']);
   if (unreadMessages != null) {
     responseAllTicketsDataTicket.unreadMessages = unreadMessages;
   }
@@ -143,15 +144,15 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
   ResponseAllTicketsDataTicket copyWith({
     int? id,
     int? productId,
+    String? productName,
     int? userId,
     String? type,
     dynamic ticketStatus,
     int? status,
     String? createdAt,
-    String? productName,
     String? updatedAt,
-    String? unreadMessages,
     String? time,
+    String? unreadMessages,
   }) {
     return ResponseAllTicketsDataTicket()
       ..id = id ?? this.id
@@ -162,8 +163,8 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
       ..ticketStatus = ticketStatus ?? this.ticketStatus
       ..status = status ?? this.status
       ..createdAt = createdAt ?? this.createdAt
-      ..time = createdAt ?? this.time
-      ..unreadMessages = unreadMessages ?? this.unreadMessages
-      ..updatedAt = updatedAt ?? this.updatedAt;
+      ..updatedAt = updatedAt ?? this.updatedAt
+      ..time = time ?? this.time
+      ..unreadMessages = unreadMessages ?? this.unreadMessages;
   }
 }
