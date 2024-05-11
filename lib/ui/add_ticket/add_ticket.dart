@@ -27,6 +27,7 @@ class _AddTicket extends State<AddTicket> {
 
   @override
   void initState() {
+    super.initState();
     _messageCtrl = TextEditingController();
     _noteCtrl = TextEditingController();
   }
@@ -88,7 +89,7 @@ class _AddTicket extends State<AddTicket> {
                                           Icons.production_quantity_limits,
                                           color: AppColors.greenPrimary,
                                         ),
-                                        hintText: "Please select",
+                                        hintText: "Select Product",
                                         width: 300,
                                         initialSelection: loginProvider
                                             .listProduct

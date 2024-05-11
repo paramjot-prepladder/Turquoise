@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
+import '../home_tab/tab.dart';
 import '../products/products.dart';
 import '../register/register.dart';
 
@@ -85,12 +87,23 @@ class _Selection extends State<Selection> {
                 width: double.infinity,
                 margin: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Register()),
-                    );
+                  onPressed: () async {
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    var token = prefs.getString('token');
+                    if (token == null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register()),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TabHome()),
+                      );
+                    }
                   },
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(

@@ -4,12 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:testing/ui/chat/chat.dart';
-import 'package:testing/ui/home_tab/tab.dart';
-import 'package:testing/ui/login/login.dart';
-import 'package:testing/ui/menu/menu.dart';
-import 'package:testing/ui/products/products.dart';
-import 'package:testing/ui/register/register.dart';
 import 'package:testing/ui/selection/selection.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
@@ -136,11 +130,12 @@ class MyApp extends StatelessWidget {
                 useMaterial3: true,
               ),
               debugShowCheckedModeBanner: false,
-              home: snapshot.data?.getString('token') == null
-                  ? const Selection()
-                  : snapshot.data!.getString('token')!.toString().isEmpty
-                      ? const ProductListing()
-                      : const TabHome(),
+              home:const Selection()
+              // home: snapshot.data?.getString('token') == null
+              //     ? const Selection()
+              //     : snapshot.data!.getString('token')!.toString().isEmpty
+              //         ? const ProductListing()
+              //         : const TabHome(),
             ));
   }
 }
