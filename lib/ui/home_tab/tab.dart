@@ -20,15 +20,11 @@ class _TabHome extends State<TabHome> with SingleTickerProviderStateMixin{
   TabController? _controller;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // Create TabController for getting the index of current tab
     _controller = TabController(length: 3, vsync: this);
 
     _controller?.addListener(() {
-      setState(() {
-        _selectedIndex = _controller?.index??0;
-      });
       if(_controller?.index == 0){
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
