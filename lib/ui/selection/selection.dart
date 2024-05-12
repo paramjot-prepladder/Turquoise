@@ -91,7 +91,7 @@ class _Selection extends State<Selection> {
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     var token = prefs.getString('token');
-                    if (token == null) {
+                    if (token == null || token == "") {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
