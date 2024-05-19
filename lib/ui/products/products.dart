@@ -48,7 +48,7 @@ class _ProductListing extends State<ProductListing> {
                   return GridView.count(
                       shrinkWrap: true,
                       crossAxisCount: 2,
-                      childAspectRatio: 0.55,
+                      childAspectRatio: 0.65,
                       physics: ScrollPhysics(),
                       children: List.generate(
                           loginProvider.listCategory?.data.categories.length ??
@@ -128,16 +128,16 @@ class ProductPreview extends StatelessWidget {
                       _launchURL(Uri.parse(externalUrl));
                     },
                     child: const Text("Buy", style: TextStyle(fontSize: 12))),
-                TextButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Register()),
-                      );
-                    },
-                    child:
-                        const Text("Support", style: TextStyle(fontSize: 12)))
+                // TextButton(
+                //     onPressed: () async {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => const Register()),
+                //       );
+                //     },
+                //     child:
+                //         const Text("Support", style: TextStyle(fontSize: 12)))
               ],
             )
           ],

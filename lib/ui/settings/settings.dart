@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/ui/change_password.dart';
 import 'package:testing/ui/login/login.dart';
 import 'package:testing/utils/color/app_colors.dart';
+import 'package:testing/ui/selection/selection.dart';
 
 import '../../main.dart';
 
@@ -145,7 +146,7 @@ class _Settings extends State<Settings> {
     await prefs.setString('token', '');
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MyApp()),
+        MaterialPageRoute(builder: (context) => const Selection()),
         (route) => false);
   }
 }

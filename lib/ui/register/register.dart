@@ -175,9 +175,9 @@ class _Register extends State<Register> {
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: CountryCodePicker(
                             initialSelection: "BH",
-                            onInit: (value) => {
-                              _countryCode = value?.dialCode
-                              // debugPrint("" + value!.code!)
+                            onChanged: (value) => {
+                              _countryCode = value.dialCode
+                              // debugPrint("code_value " + value!.dialCode!)
                             },
                           ),
                         ),

@@ -99,6 +99,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                   automaticallyImplyLeading: false,
                   backgroundColor: AppColors.whiteText,
                   elevation: 0,
+                  scrolledUnderElevation: 0,
                   toolbarHeight: 80,
                   flexibleSpace: Column(
                     children: [
@@ -112,7 +113,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                                 size: 20,
                               ))),
                       const Padding(
-                        padding: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 0),
                         child: Text('MESSAGES',
                             style: TextStyle(
                                 color: AppColors.greenPrimary,

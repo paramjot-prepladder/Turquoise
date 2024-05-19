@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/ui/GlobalVariable.dart';
+import 'package:testing/ui/chat/chat.dart';
 import 'package:testing/ui/selection/selection.dart';
 import 'package:testing/utils/color/app_colors.dart';
 
@@ -26,6 +28,21 @@ void main() async {
     provisional: false,
     sound: true,
   );
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+    var type = message.data["chat_type"];
+    var ticket = message.data["ticket_id"];
+    print('Message data: ${ticket.toString()}');
+    if(type == "2") {
+      Navigator.of(
+          GlobalVariable.navState.currentContext!).push(
+        MaterialPageRoute(builder: (context) => Chat(ticketId: ticket)),
+      );
+    }
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.data["chat_type"]}');
+    }
+  });
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
@@ -49,7 +66,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  print('Handling a background message ${message.messageId}');
+  print('Handling a background message ${message.data}');
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -129,6 +146,7 @@ class MyApp extends StatelessWidget {
                     ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
                 useMaterial3: true,
               ),
+            navigatorKey: GlobalVariable.navState,
               debugShowCheckedModeBanner: false,
               home:const Selection()
               // home: snapshot.data?.getString('token') == null
