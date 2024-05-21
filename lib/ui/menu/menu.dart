@@ -129,14 +129,26 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                     padding:
                                                         const EdgeInsets.only(
                                                             top: 5),
-                                                    child: Text(
-                                                        '${loginProvider.ticket?[index].time}',
-                                                        textAlign:
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                            '${loginProvider.ticket?[index].fullDateTime}',
+                                                            textAlign:
                                                             TextAlign.start,
-                                                        style: const TextStyle(
-                                                            color: AppColors
-                                                                .textgreyText,
-                                                            fontSize: 10)))
+                                                            style: const TextStyle(
+                                                                color: AppColors
+                                                                    .textgreyText,
+                                                                fontSize: 10)),
+                                                        Text(
+                                                            ' • ${loginProvider.ticket?[index].time}',
+                                                            textAlign:
+                                                            TextAlign.start,
+                                                            style: const TextStyle(
+                                                                color: AppColors
+                                                                    .textgreyText,
+                                                                fontSize: 10))
+                                                      ],
+                                                    ))
                                               ],
                                             ),
                                           ),
@@ -231,7 +243,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   }
 
   void refreshChat() {
-    timer = Timer(const Duration(seconds: 50), () {
+    timer = Timer(const Duration(seconds: 10), () {
       setState(() {
         shouldCallApi = true;
       });

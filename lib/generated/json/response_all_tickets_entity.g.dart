@@ -115,6 +115,10 @@ ResponseAllTicketsDataTicket $ResponseAllTicketsDataTicketFromJson(
   if (time != null) {
     responseAllTicketsDataTicket.time = time;
   }
+  final String? fullDateTime = jsonConvert.convert<String>(json['full_date_time']);
+  if (fullDateTime != null) {
+    responseAllTicketsDataTicket.fullDateTime = fullDateTime;
+  }
   final String? unreadMessages = jsonConvert.convert<String>(
       json['unread_messages']);
   if (unreadMessages != null) {
@@ -136,6 +140,7 @@ Map<String, dynamic> $ResponseAllTicketsDataTicketToJson(
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   data['time'] = entity.time;
+  data['full_date_time'] = entity.fullDateTime;
   data['unread_messages'] = entity.unreadMessages;
   return data;
 }
@@ -152,6 +157,7 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
     String? createdAt,
     String? updatedAt,
     String? time,
+    String? fullDateTime,
     String? unreadMessages,
   }) {
     return ResponseAllTicketsDataTicket()
@@ -165,6 +171,7 @@ extension ResponseAllTicketsDataTicketExtension on ResponseAllTicketsDataTicket 
       ..createdAt = createdAt ?? this.createdAt
       ..updatedAt = updatedAt ?? this.updatedAt
       ..time = time ?? this.time
+      ..fullDateTime = fullDateTime ?? this.fullDateTime
       ..unreadMessages = unreadMessages ?? this.unreadMessages;
   }
 }

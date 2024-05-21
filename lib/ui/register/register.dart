@@ -71,6 +71,7 @@ class _Register extends State<Register> {
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
             automaticallyImplyLeading: false,
+            scrolledUnderElevation: 0,
             backgroundColor: AppColors.whiteText,
             elevation: 0,
             toolbarHeight: 120,
@@ -177,6 +178,10 @@ class _Register extends State<Register> {
                             initialSelection: "BH",
                             onChanged: (value) => {
                               _countryCode = value.dialCode
+                              // debugPrint("code_value " + value!.dialCode!)
+                            },
+                            onInit: (value) => {
+                              _countryCode = value?.dialCode
                               // debugPrint("code_value " + value!.dialCode!)
                             },
                           ),

@@ -48,7 +48,7 @@ class _ProductListing extends State<ProductListing> {
                   return GridView.count(
                       shrinkWrap: true,
                       crossAxisCount: 2,
-                      childAspectRatio: 0.65,
+                      childAspectRatio: 0.60,
                       physics: ScrollPhysics(),
                       children: List.generate(
                           loginProvider.listCategory?.data.categories.length ??

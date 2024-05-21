@@ -56,6 +56,8 @@ class ResponseAllTicketsDataTicket {
 	late String updatedAt;
 	@JSONField(name: "time")
 	late String time;
+	@JSONField(name: "full_date_time")
+	late String fullDateTime;
 	@JSONField(name: "unread_messages")
 	late String unreadMessages;
 
