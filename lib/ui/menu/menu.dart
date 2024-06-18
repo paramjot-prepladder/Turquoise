@@ -134,7 +134,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                         Text(
                                                             '${loginProvider.ticket?[index].fullDateTime}',
                                                             textAlign:
-                                                            TextAlign.start,
+                                                                TextAlign.start,
                                                             style: const TextStyle(
                                                                 color: AppColors
                                                                     .textgreyText,
@@ -142,7 +142,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                         Text(
                                                             ' • ${loginProvider.ticket?[index].time}',
                                                             textAlign:
-                                                            TextAlign.start,
+                                                                TextAlign.start,
                                                             style: const TextStyle(
                                                                 color: AppColors
                                                                     .textgreyText,
@@ -207,8 +207,8 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                   ));
                             },
                           )
-                        : const Center(
-                            child: Text("No Ticket found"),
+                        : Center(
+                            child: noTicketText(loginProvider),
                           )
                     : const Center(
                         child: CircularProgressIndicator(
@@ -218,6 +218,19 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
               },
             ),
             floatingActionButton: getFloatingButton()));
+  }
+
+  Widget noTicketText(LoginProvider loginProvider) {
+    if (loginProvider.listProduct?.data.products.isEmpty == true) {
+      return const Padding(
+          padding: EdgeInsets.all(20),
+          child: Text(
+            "Thanks for joining the TurQuoise family! We are currently verifying your information, and a representative will connect with you shortly.",
+            textAlign: TextAlign.center,
+          ));
+    } else {
+      return const Text("No Ticket found");
+    }
   }
 
   Widget getFloatingButton() {
@@ -253,6 +266,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   void callFuture(LoginProvider loginProvider) async {
     timer?.cancel();
     await loginProvider.getTickets(context: context);
+    await loginProvider.menuApi(context: context);
     setState(() {
       shouldCallApi = false;
     });

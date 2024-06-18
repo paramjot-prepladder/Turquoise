@@ -25,6 +25,7 @@ class LoginProvider extends ChangeNotifier {
 
   menuApi({required BuildContext context}) async {
     listProduct = await ApiService().productList();
+    print("refresh hoja1");
     notifyListeners();
   }
   categoryRequest({required BuildContext context}) async {

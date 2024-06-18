@@ -29,26 +29,28 @@ void main() async {
     sound: true,
   );
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
     var type = message.data["chat_type"];
     var ticket = message.data["ticket_id"];
     print('Message data: ${ticket.toString()}');
-    if(type == "2") {
-      Navigator.of(
-          GlobalVariable.navState.currentContext!).push(
+    if (type == "2") {
+      Navigator.of(GlobalVariable.navState.currentContext!).push(
         MaterialPageRoute(builder: (context) => Chat(ticketId: ticket)),
       );
     }
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.data["chat_type"]}');
+      print(
+          'Message also contained a notification: ${message.data["chat_type"]}');
     }
   });
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
+    print('Message data: ${message.data.toString()}');
 
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
+      print('Message data: ${message.notification?.toString()}');
+      print('Message data: ${message.notification?.title}');
+      print(
+          'Message also contained a notification: ${message.notification?.android?.clickAction}');
     }
   });
   if (!kIsWeb) {
@@ -61,12 +63,13 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupFlutterNotifications();
-  if(defaultTargetPlatform != TargetPlatform.android) {
+  showDummyNoti();
+  if (defaultTargetPlatform != TargetPlatform.android) {
     showFlutterNotification(message);
   }
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  print('Handling a background message ${message.data}');
+  print('Handling a background message ${message.notification}');
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -79,10 +82,10 @@ Future<void> setupFlutterNotifications() async {
     return;
   }
   channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
+    'demo', // id
+    'demo', // title
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
 
@@ -94,7 +97,7 @@ Future<void> setupFlutterNotifications() async {
   /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   /// Update the iOS foreground notification presentation options to allow
@@ -106,7 +109,23 @@ Future<void> setupFlutterNotifications() async {
   );
   isFlutterLocalNotificationsInitialized = true;
 }
+
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+void showDummyNoti() {
+  flutterLocalNotificationsPlugin.show(
+      12,
+      "title",
+      "body",
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          icon: 'launch_background',
+        ),
+      ));
+}
 
 void showFlutterNotification(RemoteMessage message) {
   RemoteNotification? notification = message.notification;
@@ -121,15 +140,12 @@ void showFlutterNotification(RemoteMessage message) {
           channel.id,
           channel.name,
           channelDescription: channel.description,
-          // TODO add a proper drawable resource to android, for now using
-          //      one that already exists in example app.
           icon: 'launch_background',
         ),
       ),
     );
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -140,20 +156,20 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: SharedPreferences.getInstance(),
         builder: (context, snapshot) => MaterialApp(
-              title: 'TurQuoise',
-              theme: ThemeData(
-                colorScheme:
-                    ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
-                useMaterial3: true,
-              ),
+            title: 'TurQuoise',
+            theme: ThemeData(
+              colorScheme:
+                  ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
+              useMaterial3: true,
+            ),
             navigatorKey: GlobalVariable.navState,
-              debugShowCheckedModeBanner: false,
-              home:const Selection()
-              // home: snapshot.data?.getString('token') == null
-              //     ? const Selection()
-              //     : snapshot.data!.getString('token')!.toString().isEmpty
-              //         ? const ProductListing()
-              //         : const TabHome(),
+            debugShowCheckedModeBanner: false,
+            home: const Selection()
+            // home: snapshot.data?.getString('token') == null
+            //     ? const Selection()
+            //     : snapshot.data!.getString('token')!.toString().isEmpty
+            //         ? const ProductListing()
+            //         : const TabHome(),
             ));
   }
 }
