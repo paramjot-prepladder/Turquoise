@@ -16,7 +16,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationSettings settings = await messaging.requestPermission(
@@ -28,31 +28,6 @@ void main() async {
     provisional: false,
     sound: true,
   );
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    var type = message.data["chat_type"];
-    var ticket = message.data["ticket_id"];
-    print('Message data: ${ticket.toString()}');
-    if (type == "2") {
-      Navigator.of(GlobalVariable.navState.currentContext!).push(
-        MaterialPageRoute(builder: (context) => Chat(ticketId: ticket)),
-      );
-    }
-    if (message.notification != null) {
-      print(
-          'Message also contained a notification: ${message.data["chat_type"]}');
-    }
-  });
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data.toString()}');
-
-    if (message.notification != null) {
-      print('Message data: ${message.notification?.toString()}');
-      print('Message data: ${message.notification?.title}');
-      print(
-          'Message also contained a notification: ${message.notification?.android?.clickAction}');
-    }
-  });
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
@@ -63,13 +38,13 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupFlutterNotifications();
-  showDummyNoti();
+  // showDummyNoti();
   if (defaultTargetPlatform != TargetPlatform.android) {
     showFlutterNotification(message);
   }
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  print('Handling a background message ${message.notification}');
+  print('Handling a background message ${message.notification?.title ?? ""}');
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -90,18 +65,10 @@ Future<void> setupFlutterNotifications() async {
   );
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  /// Create an Android Notification Channel.
-  ///
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-
-  /// Update the iOS foreground notification presentation options to allow
-  /// heads up notifications.
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -147,10 +114,88 @@ void showFlutterNotification(RemoteMessage message) {
   }
 }
 
-class MyApp extends StatelessWidget {
+// class MyApp extends StatefulWidget{
+//
+// }
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//         future: SharedPreferences.getInstance(),
+//         builder: (context, snapshot) => MaterialApp(
+//             title: 'TurQuoise',
+//             theme: ThemeData(
+//               colorScheme:
+//                   ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
+//               useMaterial3: true,
+//             ),
+//             navigatorKey: GlobalVariable.navState,
+//             debugShowCheckedModeBanner: false,
+//             home: const Selection()
+//             // home: snapshot.data?.getString('token') == null
+//             //     ? const Selection()
+//             //     : snapshot.data!.getString('token')!.toString().isEmpty
+//             //         ? const ProductListing()
+//             //         : const TabHome(),
+//             ));
+//   }
+// }
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<StatefulWidget> createState() => _Application();
+}
+
+class _Application extends State<MyApp> {
+  // It is assumed that all messages contain a data field with the key 'type'
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data.toString()}');
+
+      if (message.notification != null) {
+        print('Message data: ${message.notification?.toString()}');
+        print('Message data: ${message.notification?.title}');
+        print(
+            'Message also contained a notification: ${message.notification?.android?.clickAction}');
+      }
+    });
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    var type = message.data["chat_type"];
+    var ticket = message.data["ticket_id"];
+    if (type == "2") {
+      Navigator.of(GlobalVariable.navState.currentContext!).push(
+        MaterialPageRoute(builder: (context) => Chat(ticketId: ticket)),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    setupInteractedMessage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -159,17 +204,17 @@ class MyApp extends StatelessWidget {
             title: 'TurQuoise',
             theme: ThemeData(
               colorScheme:
-                  ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
+              ColorScheme.fromSeed(seedColor: AppColors.greenPrimary),
               useMaterial3: true,
             ),
             navigatorKey: GlobalVariable.navState,
             debugShowCheckedModeBanner: false,
             home: const Selection()
-            // home: snapshot.data?.getString('token') == null
-            //     ? const Selection()
-            //     : snapshot.data!.getString('token')!.toString().isEmpty
-            //         ? const ProductListing()
-            //         : const TabHome(),
-            ));
+          // home: snapshot.data?.getString('token') == null
+          //     ? const Selection()
+          //     : snapshot.data!.getString('token')!.toString().isEmpty
+          //         ? const ProductListing()
+          //         : const TabHome(),
+        ));
   }
 }
