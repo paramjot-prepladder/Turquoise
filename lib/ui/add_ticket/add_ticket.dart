@@ -204,6 +204,12 @@ class _AddTicket extends State<AddTicket> {
     setState(() => _isLoading = false);
     if (result?.status == true) {
       Navigator.of(context).pop(true);
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(
+          message: result?.message ?? '',
+        ),
+      );
       // Navigator.pop(context);
     } else {
       showTopSnackBar(

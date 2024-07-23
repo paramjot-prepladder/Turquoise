@@ -221,7 +221,8 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   }
 
   Widget noTicketText(LoginProvider loginProvider) {
-    if (loginProvider.listProduct?.data.products.isEmpty == true) {
+    if (loginProvider.listProduct?.data.products.isEmpty == true ||
+        loginProvider.listProduct?.data.products.length == 1) {
       return const Padding(
           padding: EdgeInsets.all(20),
           child: Text(
