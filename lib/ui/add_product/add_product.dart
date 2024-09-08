@@ -1,26 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:testing/utils/common/common_widgets.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../model/product/response_p_entity.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/color/app_colors.dart';
+import '../../utils/common/common_widgets.dart';
 
-class AddTicket extends StatefulWidget {
-  const AddTicket({super.key});
+class AddProduct extends StatefulWidget {
+  const AddProduct({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _AddTicket();
+    return _AddProduct();
   }
 }
 
 String dropdownValue = "name";
 
-class _AddTicket extends State<AddTicket> {
+class _AddProduct extends State<AddProduct> {
   late TextEditingController _messageCtrl;
   late TextEditingController _noteCtrl;
   var _isLoading = false;
@@ -56,7 +56,7 @@ class _AddTicket extends State<AddTicket> {
                               ))),
                       const Padding(
                         padding: EdgeInsets.only(top: 10),
-                        child: Text('ADD TICKET',
+                        child: Text('ADD PRODUCT',
                             style: TextStyle(
                                 color: AppColors.greenPrimary,
                                 fontWeight: FontWeight.w800,
@@ -78,7 +78,7 @@ class _AddTicket extends State<AddTicket> {
                           builder: (context, loginProvider, child) {
                             return FutureProvider(
                                 create: (_) {
-                                  return loginProvider.menuApi(
+                                  return loginProvider.product(
                                       context: context);
                                 },
                                 lazy: false,
@@ -161,7 +161,7 @@ class _AddTicket extends State<AddTicket> {
                                   ),
                                 )
                               : buttonRounded(
-                                  text: 'Create Ticket',
+                                  text: 'Add Product',
                                   top: 30,
                                   onTap: () {
                                     debugPrint('prinint: login');
@@ -206,7 +206,7 @@ class _AddTicket extends State<AddTicket> {
     body['product_id'] = dropdownValue;
     body['serial_number'] = _messageCtrl.text;
     body['note'] = _noteCtrl.text;
-    var result = await loginProvider.createTicket(body, context: context);
+    var result = await loginProvider.addProduct(body, context: context);
     setState(() => _isLoading = false);
     if (result?.status == true) {
       Navigator.of(context).pop(true);

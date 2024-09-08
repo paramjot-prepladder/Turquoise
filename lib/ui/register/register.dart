@@ -7,6 +7,7 @@ import 'package:testing/utils/color/app_colors.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../model/product/response_p_entity.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/common/common_widgets.dart';
 import '../home_tab/tab.dart';
@@ -31,10 +32,12 @@ class _Register extends State<Register> {
   TextEditingController? _usernameController;
   TextEditingController? _phoneController;
   TextEditingController? _nameController;
+  TextEditingController? _serialController;
   var _isLoading = false;
   late TextEditingController _confirmPasswordCtrl;
   var _passwordVisible = false;
   var _passwordVisibleConfirm = false;
+  String dropdownValue = "name";
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _Register extends State<Register> {
     _nameController = TextEditingController(text: '');
     _phoneController = TextEditingController(text: '');
     _confirmPasswordCtrl = TextEditingController(text: '');
+    _serialController = TextEditingController(text: '');
   }
 
   void _register() async {
@@ -108,7 +112,7 @@ class _Register extends State<Register> {
           backgroundColor: AppColors.whiteText,
           body: Container(
             height: double.infinity,
-           /* decoration: const BoxDecoration(
+            /* decoration: const BoxDecoration(
               image: DecorationImage(
                 alignment: Alignment.bottomRight,
                 fit: BoxFit.scaleDown,
@@ -277,6 +281,87 @@ class _Register extends State<Register> {
                         textInputAction: TextInputAction.done,
                       ),
                     ),
+                    Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      child: Consumer<LoginProvider>(
+                        builder: (context, loginProvider, child) {
+                          return FutureProvider(
+                              create: (_) {
+                                return loginProvider.product(context: context);
+                              },
+                              lazy: false,
+                              initialData: ResponsePData(),
+                              child: loginProvider.listProduct?.data != null
+                                  ? DropdownMenu<String>(
+                                      menuHeight: 400,
+                                      leadingIcon: const Icon(
+                                        Icons.production_quantity_limits,
+                                        color: AppColors.greenPrimary,
+                                      ),
+                                      hintText: "Select Product",
+                                      width: 300,
+                                      initialSelection: loginProvider
+                                          .listProduct
+                                          ?.data
+                                          .products
+                                          .first
+                                          .name,
+                                      onSelected: (String? value) {
+                                        // This is called when the user selects an item.
+                                        setState(() {
+                                          dropdownValue = value!;
+                                        });
+                                      },
+                                      dropdownMenuEntries: loginProvider
+                                          .listProduct!.data.products
+                                          .map<DropdownMenuEntry<String>>(
+                                              (ResponsePDataProducts value) {
+                                        return DropdownMenuEntry<String>(
+                                            value: value.id.toString(),
+                                            label: value.name,
+                                            style: const ButtonStyle(
+                                                maximumSize:
+                                                    MaterialStatePropertyAll(
+                                                        Size(300, 300)),
+                                                textStyle:
+                                                    MaterialStatePropertyAll(
+                                                        TextStyle(
+                                                            overflow: TextOverflow
+                                                                .ellipsis))));
+                                      }).toList(),
+                                    )
+                                  : const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.pinkText,
+                                      ),
+                                    ));
+                        },
+                      ),
+                    ),
+                    TextField(
+                      autocorrect: false,
+                      autofillHints:
+                          _registering ? null : [AutofillHints.email],
+                      autofocus: true,
+                      controller: _serialController,
+                      decoration: const InputDecoration(
+                          // border: const OutlineInputBorder(
+                          //   borderRadius: BorderRadius.all(
+                          //     Radius.circular(8),
+                          //   ),
+                          // ),
+                          hintText: 'Serial Number',
+                          prefixIcon: Icon(Icons.person),
+                          prefixIconColor: AppColors.greenPrimary),
+                      keyboardType: TextInputType.name,
+                      onEditingComplete: () {
+                        _focusNode?.requestFocus();
+                      },
+                      readOnly: _registering,
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.next,
+                    ),
                     Consumer<LoginProvider>(
                       builder: (context, loginProvider, _) {
                         return _isLoading
@@ -368,6 +453,22 @@ class _Register extends State<Register> {
         ),
       );
       return;
+    } else if (dropdownValue == "name") {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly Select product.",
+        ),
+      );
+      return;
+    } else if (_serialController?.text.isEmpty == true) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: "Kindly enter Serial Number.",
+        ),
+      );
+      return;
     }
 
     if (_passwordController?.text == _confirmPasswordCtrl.text) {
@@ -379,6 +480,8 @@ class _Register extends State<Register> {
       body['email'] = _usernameController?.text ?? '';
       body['password'] = _passwordController?.text ?? '';
       body['confirm_password'] = _confirmPasswordCtrl.text;
+      body['serial_number'] = _serialController?.text ?? '';
+      body['product_id'] = dropdownValue;
       var result = await loginProvider.registerUser(body, context: context);
       setState(() => _isLoading = false);
 

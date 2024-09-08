@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:testing/ui/add_product/add_product.dart';
 import 'package:testing/ui/add_ticket/add_ticket.dart';
 
 import '../../model/product/response_p_entity.dart';
@@ -119,12 +120,20 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                     padding:
                                                         const EdgeInsets.only(
                                                             top: 5),
-                                                    child: Text(
-                                                      '${loginProvider.ticket?[index].ticketStatus}',
-                                                      style: const TextStyle(
-                                                          color: AppColors
-                                                              .greylight),
-                                                    )),
+                                                    child: Row(children: [
+                                                      Text(
+                                                        '${loginProvider.ticket?[index].ticketStatus}',
+                                                        style: const TextStyle(
+                                                            color: AppColors
+                                                                .greylight),
+                                                      ),
+                                                      Text(
+                                                        '${loginProvider.ticket?[index].serialNumber}',
+                                                        style: const TextStyle(
+                                                            color: AppColors
+                                                                .greylight),
+                                                      )
+                                                    ],)),
                                                 Padding(
                                                     padding:
                                                         const EdgeInsets.only(
@@ -235,25 +244,47 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   }
 
   Widget getFloatingButton() {
-    return Consumer<LoginProvider>(builder: (context, loginProvider, _) {
-      return FutureProvider(
-          create: (_) {
-            return loginProvider.menuApi(context: context);
-          },
-          lazy: false,
-          initialData: ResponsePData(),
-          child: loginProvider.listProduct?.data.products.length != 0
-              ? FloatingActionButton.extended(
-                  onPressed: _incrementCounter,
-                  backgroundColor: AppColors.greenPrimary,
-                  tooltip: 'Add Ticket',
-                  label: const Text(
-                    "Raise Ticket",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              : Container());
-    });
+    return Stack(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: 30),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton.extended(
+              onPressed: _openAddProduct,
+              backgroundColor: AppColors.greenPrimary,
+              tooltip: 'Add Product',
+              label: const Text(
+                "Add Product",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Consumer<LoginProvider>(builder: (context, loginProvider, _) {
+            return FutureProvider(
+                create: (_) {
+                  return loginProvider.menuApi(context: context);
+                },
+                lazy: false,
+                initialData: ResponsePData(),
+                child: loginProvider.listProduct?.data.products.length != 0
+                    ? FloatingActionButton.extended(
+                        onPressed: _incrementCounter,
+                        backgroundColor: AppColors.greenPrimary,
+                        tooltip: 'Add Ticket',
+                        label: const Text(
+                          "Raise Ticket",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : Container());
+          }),
+        ),
+      ],
+    );
   }
 
   void refreshChat() {
@@ -296,6 +327,22 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
     final bool? shouldRefresh = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddTicket()),
+    );
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    var a = await messaging.getToken();
+
+    debugPrint(a);
+    if (shouldRefresh ?? false) {
+      setState(() {
+        shouldCallApi = true;
+      });
+    }
+  }
+
+  Future<void> _openAddProduct() async {
+    final bool? shouldRefresh = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddProduct()),
     );
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     var a = await messaging.getToken();

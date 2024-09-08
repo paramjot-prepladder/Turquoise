@@ -68,9 +68,18 @@ class LoginProvider extends ChangeNotifier {
     return ApiService().productList();
   }
 
+   product({required BuildContext context}) async {
+    listProduct = await ApiService().product();
+    notifyListeners();
+  }
+
   Future<ResponseMessageEntity?> createTicket(Map<String, String> body,
       {required BuildContext context}) async {
     return ApiService().createTicket(body);
+  }
+  Future<ResponseMessageEntity?> addProduct(Map<String, String> body,
+      {required BuildContext context}) async {
+    return ApiService().addProduct(body);
   }
 
   Future<ResponseLoginEntity?> registerUser(Map<String, String> body,

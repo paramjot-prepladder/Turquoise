@@ -48,7 +48,7 @@ class ApiService {
       var token = prefs.getString('token');
       http.Response data = await http.get(Uri.parse("${baseUrl}products"),
           headers: {"Authorization": token.toString()});
-      debugPrint("Authorization"+ token.toString());
+      debugPrint("Authorization" + token.toString());
       debugPrint(data.body);
       if (data.statusCode == 200) {
         debugPrint('movieTitle: ${data.body}');
@@ -61,13 +61,31 @@ class ApiService {
       return Future.error(error);
     }
   }
+
+  Future<ResponsePEntity?> product() async {
+    try {
+
+      http.Response data = await http.get(Uri.parse("${baseUrl}product"));
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        debugPrint('movieTitle123: ${data.body}');
+
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
   Future<ResponseCategoryEntity?> categoryList() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.get(Uri.parse("${baseUrl}categories"),
           headers: {"Authorization": token.toString()});
-      debugPrint("Authorization"+ token.toString());
+      debugPrint("Authorization" + token.toString());
       debugPrint(data.body);
       if (data.statusCode == 200) {
         debugPrint('movieTitle: ${data.body}');
@@ -144,6 +162,22 @@ class ApiService {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token');
       http.Response data = await http.post(Uri.parse("${baseUrl}ticket"),
+          body: body, headers: {"Authorization": token.toString()});
+      debugPrint(data.body);
+      if (data.statusCode == 200) {
+        return JsonConvert.fromJsonAsT(jsonDecode(data.body));
+      } else {
+        return Future.error(data.statusCode);
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+  Future<ResponseMessageEntity?> addProduct(Map<String, String> body) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
+      http.Response data = await http.post(Uri.parse("${baseUrl}product"),
           body: body, headers: {"Authorization": token.toString()});
       debugPrint(data.body);
       if (data.statusCode == 200) {
