@@ -128,7 +128,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                                 .greylight),
                                                       ),
                                                       Text(
-                                                        '${loginProvider.ticket?[index].serialNumber}',
+                                                        ' ${loginProvider.ticket?[index].createdAt}',
                                                         style: const TextStyle(
                                                             color: AppColors
                                                                 .greylight),
@@ -192,7 +192,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                                                                     .w900)),
                                                   )
                                                 : Text(""),
-                                            const Icon(Icons.arrow_right)
+                                            const Icon(Icons.chat)
                                             // Container(
                                             //   color: AppColors.greenPrimary,
                                             //   alignment: Alignment.center,

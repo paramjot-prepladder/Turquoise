@@ -128,6 +128,7 @@ class ApiService {
       var token = prefs.getString('token');
       http.Response data = await http.get(Uri.parse("${baseUrl}ticket"),
           headers: {"Authorization": token.toString()});
+      debugPrint(data.request?.url.toString());
       debugPrint(data.body);
       if (data.statusCode == 200) {
         return JsonConvert.fromJsonAsT(jsonDecode(data.body));

@@ -46,13 +46,11 @@ class ResponseAllTicketsDataTicket {
 	late String productName;
 	@JSONField(name: "user_id")
 	late int userId;
-	@JSONField(name: "serial_number")
-	late int serialNumber;
 	late String type;
 	@JSONField(name: "ticket_status")
 	dynamic ticketStatus;
 	late int status;
-	@JSONField(name: "created_at")
+	@JSONField(name: "serial_number")
 	late String createdAt;
 	@JSONField(name: "updated_at")
 	late String updatedAt;

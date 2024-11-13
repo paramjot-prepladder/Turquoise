@@ -103,7 +103,7 @@ ResponseAllTicketsDataTicket $ResponseAllTicketsDataTicketFromJson(
   if (status != null) {
     responseAllTicketsDataTicket.status = status;
   }
-  final String? createdAt = jsonConvert.convert<String>(json['created_at']);
+  final String? createdAt = jsonConvert.convert<String>(json['serial_number']);
   if (createdAt != null) {
     responseAllTicketsDataTicket.createdAt = createdAt;
   }
@@ -137,7 +137,7 @@ Map<String, dynamic> $ResponseAllTicketsDataTicketToJson(
   data['type'] = entity.type;
   data['ticket_status'] = entity.ticketStatus;
   data['status'] = entity.status;
-  data['created_at'] = entity.createdAt;
+  data['serial_number'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   data['time'] = entity.time;
   data['full_date_time'] = entity.fullDateTime;
